@@ -1,7 +1,3 @@
-¡Claro! Aquí tienes un texto de presentación para tu archivo `README.md`:
-
----
-
 # Proyecto TIC - Universidad Tecnológica Nacional (UTN)
 
 Bienvenido al repositorio del proyecto TIC para la Universidad Tecnológica Nacional de Argentina (UTN). Este proyecto tiene como objetivo desarrollar y mantener un sitio web integral destinado a mejorar la experiencia digital de estudiantes, docentes y personal administrativo de la universidad.
