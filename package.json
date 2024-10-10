@@ -1,0 +1,18 @@
+{
+  "name": "tic-web",
+  "version": "1.0.0",
+  "description": "Bienvenido al repositorio del proyecto TIC para la Universidad Tecnológica Nacional de Argentina (UTN). Este proyecto tiene como objetivo desarrollar y mantener un sitio web integral destinado a mejorar la experiencia digital de estudiantes, docentes y personal administrativo de la universidad.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "devstart": "node --watch index",
+    "start": "node index"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1"
+  }
+}
