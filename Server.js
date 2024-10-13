@@ -1,12 +1,12 @@
 const express = require("express");
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 class Server {
   constructor() {
     this.port = process.env.PORT;
     this.app = express();
-    //middlewares
+    this.cargarMiddlewares();
     this.cargarRutas();
     this.conectarABD();
   }
@@ -17,10 +17,12 @@ class Server {
     });
   }
 
-  //middlewares
+  cargarMiddlewares() {
+    this.app.use(express.json());
+  }
 
   cargarRutas() {
-    this.app.use("/api/materiales", require("./routes/materiales"));
+    this.app.use("/api/empleados", require("./routes/empleados"));
   }
 
   async conectarABD() {

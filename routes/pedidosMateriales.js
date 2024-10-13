@@ -8,7 +8,7 @@ const {
   getPorId,
   actualizarPorId,
   eliminarPorId,
-} = require("../controllers/materiales");
+} = require("../controllers/pedidosMateriales");
 
 //middlewares
 

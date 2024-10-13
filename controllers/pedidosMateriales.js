@@ -1,8 +1,8 @@
-const materialesModel = require("../models/materiales");
+const pedidosMaterialesModel = require("../models/pedidosMateriales");
 
 const getTodos = async (req, res) => {
   try {
-    res.status(200).json(await materialesModel.find());
+    res.status(200).json(await pedidosMaterialesModel.find());
   } catch (e) {
     res.status(500).json({
       mensaje: e,
@@ -12,9 +12,9 @@ const getTodos = async (req, res) => {
 
 const crear = async (req, res) => {
   try {
-    const nuevoMaterial = new materialesModel(req.body);
-    const materialGuardado = await nuevoMaterial.save();
-    res.status(201).json(materialGuardado);
+    const nuevoPedidoMaterial = new pedidosMaterialesModel(req.body);
+    const pedidoMaterialGuardado = await nuevoPedidoMaterial.save();
+    res.status(201).json(pedidoMaterialGuardado);
   } catch (e) {
     res.status(500).json({
       mensaje: e,
@@ -25,9 +25,9 @@ const crear = async (req, res) => {
 const getPorId = async (req, res) => {
   try {
     let id = req.params.id;
-    const mat = await materialesModel.findById(id);
-    if (mat) {
-      res.status(200).json(mat);
+    const pedidoMaterial = await pedidosMaterialesModel.findById(id);
+    if (pedidoMaterial) {
+      res.status(200).json(pedidoMaterial);
     } else {
       res.status(404).json({
         id,
@@ -44,13 +44,12 @@ const getPorId = async (req, res) => {
 const actualizarPorId = async (req, res) => {
   try {
     let id = req.params.id;
-    const matActualizado = await materialesModel.findByIdAndUpdate(
-      id,
-      req.body,
-      { new: true }
-    );
-    if (matActualizado) {
-      res.status(200).json(materialActualizado);
+    const pedidoMaterialActualizado =
+      await pedidosMaterialesModel.findByIdAndUpdate(id, req.body, {
+        new: true,
+      });
+    if (pedidoMaterialActualizado) {
+      res.status(200).json(pedidoMaterialActualizado);
     } else {
       res.status(404).json({
         id,
@@ -65,11 +64,12 @@ const actualizarPorId = async (req, res) => {
 const eliminarPorId = async (req, res) => {
   try {
     let id = req.params.id;
-    const matEliminado = await materialesModel.findByIdAndDelete(id);
-    if (matEliminado) {
-      res.status(200).json({ message: "Material eliminado" });
+    const pedidoMaterialEliminado =
+      await pedidosMaterialesModel.findByIdAndDelete(id);
+    if (pedidoMaterialEliminado) {
+      res.status(200).json({ message: "Pedido de material eliminado" });
     } else {
-      res.status(404).json({ message: "Material no encontrado" });
+      res.status(404).json({ message: "Pedido de material no encontrado" });
     }
   } catch (e) {
     res.status(500).json({ message: error.message });
