@@ -17,7 +17,11 @@ const materialSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-});
+},{
+  collection: 'materiales',
+  timestamps: true}
+);
+
 
 const Material = mongoose.model("Material", materialSchema);
 
