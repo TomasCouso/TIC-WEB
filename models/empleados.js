@@ -1,34 +1,40 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
-const empleadoSchema = new mongoose.Schema({
-  nombre: {
-    type: String,
-    required: true,
+const empleadoSchema = new mongoose.Schema(
+  {
+    nombre: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    rol: {
+      type: String,
+      enum: ["admin", "empleado"],
+      default: "empleado",
+    },
+    activo: {
+      type: Boolean,
+      default: true,
+    },
+    fechaIngreso: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  rol: {
-    type: String,
-    enum: ["admin", "empleado"],
-    default: "empleado",
-  },
-  activo: {
-    type: Boolean,
-    default: true,
-  },
-  fechaIngreso: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  {
+    collection: "empleados",
+    timestamps: true,
+  }
+);
 
 empleadoSchema.pre("save", async function (next) {
   try {
@@ -36,6 +42,20 @@ empleadoSchema.pre("save", async function (next) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(this.password, salt);
       this.password = hashedPassword;
+    }
+    next();
+  } catch (error) {
+    return next(error);
+  }
+});
+
+empleadoSchema.pre("findOneAndUpdate", async function (next) {
+  try {
+    const update = this.getUpdate();
+    if (update.password) {
+      const salt = await bcrypt.genSalt(10);
+      update.password = await bcrypt.hash(update.password, salt);
+      this.setUpdate(update);
     }
     next();
   } catch (error) {

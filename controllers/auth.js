@@ -4,7 +4,7 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const empleado = await empleados.findOne({ id });
+    const empleado = await empleados.findOne({ email });
 
     if (empleado) {
       const esValida = await empleado.comparePassword(password);
