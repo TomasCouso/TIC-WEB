@@ -37,6 +37,8 @@ router.put("/:id", actualizarPorId);
 router.delete("/:id", eliminarPorId);
 
 //cargar las otras rutas
+//falta Incluir el routes de Noticias pero creo que no sería aca
+//router.use("/maquinas", require("../routes/maquinas"));
 router.use("/materiales", require("../routes/materiales"));
 router.use("/pedidos", require("../routes/pedidosMateriales"));
 
