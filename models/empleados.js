@@ -11,6 +11,14 @@ const empleadoSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      match: [
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+        "Invalid email",
+      ],
+    },
+    telefono: {
+      type: String,
+      required: true,
     },
     password: {
       type: String,
@@ -28,6 +36,9 @@ const empleadoSchema = new mongoose.Schema(
     fechaIngreso: {
       type: Date,
       default: Date.now,
+    },
+    lastLogin: {
+      type: Date,
     },
   },
   {
