@@ -25,9 +25,6 @@ const pedidoMaterialSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    fechaActualizacion: {
-      type: Date,
-    },
   },
   {
     collection: "pedidosMateriales",
