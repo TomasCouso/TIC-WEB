@@ -1,38 +1,41 @@
 const express = require("express");
-
 const mongoose = require("mongoose");
 
 class Server {
-  constructor() {
-    this.port = process.env.PORT;
-    this.app = express();
-    this.cargarMiddlewares();
-    this.cargarRutas();
-    this.conectarABD();
-  }
 
-  listen() {
-    this.app.listen(this.port, () => {
-      console.log(`Server corriendo en el puerto ${this.port}`);
-    });
-  }
+   constructor() {
+      this.port = process.env.PORT; //CARGA VARIABLE DE ENTORNO DEL ARCHIVO .ENV
+      this.app = express(); //express() CREA UNA APLICACION DE SERVIDOR WEB Y SE GUARDA EN THIS.APP
+      this.cargarMiddlewares(); //LLAMO A FUNCION PARA CARGAR LOS MIDDLEWARES
+      this.cargarRutas(); //LLAMO A FUNCION PARA CARGAR LAS RUTAS
+      this.conectarABD(); //LLAMO A FUNCION PARA CONEXION A LA BD
+   }
 
-  cargarMiddlewares() {
-    this.app.use(express.json());
-  }
+   listen() {
+      this.app.listen(this.port, () => {
+         console.log(`Server corriendo en el puerto ${this.port}`);
+      });
+   }
 
-  cargarRutas() {
-    this.app.use("/api/empleados", require("./routes/empleados"));
-  }
+   cargarMiddlewares() {
+      this.app.use(express.json()); //PARSEA EL REQUEST EN JSON PARA ACCEDER DESDE req.body
+   }
 
-  async conectarABD() {
-    try {
-      await mongoose.connect(process.env.MONGODB_URI);
-      console.log("Conexión exitosa a la base de datos");
-    } catch (e) {
-      console.error("Error al conectar con la base de datos:", e);
-      mongoose.disconnect();
-    }
-  }
+   cargarRutas() { //ESTABLEZCO EL PREFIJO DE RUTA (/api/empleados) QUE SERÁ MANEJADO POR MI ROUTES/EMPLEADOS.JS
+      this.app.use("/api/empleados", require("./routes/empleados")); //
+   }
+
+   async conectarABD() { //CONEXION A LA BD CON MONGOOSE
+
+      try { //INTENTO CONECTARME A LA BD
+         await mongoose.connect(process.env.MONGODB_URI); //DEBEN SER ASINCRONOS
+         console.log("Conexión exitosa a la base de datos");
+
+      } catch (e) {
+         console.error("Error al conectar con la base de datos:", e);
+         mongoose.disconnect();
+      }
+   }
 }
+
 module.exports = Server;

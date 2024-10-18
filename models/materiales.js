@@ -19,7 +19,8 @@ const materialSchema = new mongoose.Schema({
   },
 },{
   collection: 'materiales',
-  timestamps: true}
+  timestamps: true
+}
 );
 
 
