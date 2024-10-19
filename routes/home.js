@@ -8,6 +8,7 @@ const { getIndex } = require("../controllers/home");
 
 const {
   getNoticias,
+  getNoticia,
   createNoticia,
   updateNoticia,
   deleteNoticia,
@@ -15,10 +16,20 @@ const {
 
 const {
   getInstructivos,
+  getInstructivo,
   createInstructivo,
   updateInstructivo,
   deleteInstructivo,
 } = require("../controllers/instructivos");
+
+//TODO
+const {
+  getSolicitudes,
+  getSolicitud,
+  createSolicitud,
+  updateSolicitud,
+  deleteSolicitud,
+} = require("../controllers/solicitudes");
 
 router.get("/", getIndex);
 
@@ -28,30 +39,42 @@ router.get("/login", login);
 //Rutas para noticias
 router.get("/noticias", getNoticias);
 
+router.get("/noticias/:id", getNoticia);
+
 //estas 2 autorizadas y empleado o admin
 router.post("/noticias", createNoticia);
 
-router.put("/noticias/:id", authenticate, updateNoticia);
+router.put("/noticias/:id", updateNoticia);
 
 //esta autorizada y admin
-router.delete("/noticias/:id", authenticate, deleteNoticia);
+router.delete("/noticias/:id", deleteNoticia);
 
 // Rutas para instructivos
 router.get("/instructivos", getInstructivos);
 
-//estas 2 autorizadas y empleado o admin
-router.post("/instructivos", authenticate, createInstructivo);
+router.get("/instructivos/:id", getInstructivo);
 
-router.put("/instructivos/:id", authenticate, updateInstructivo);
+//estas 2 autorizadas y empleado o admin
+router.post("/instructivos", createInstructivo);
+
+router.put("/instructivos/:id", updateInstructivo);
 
 //esta autorizada y admin
 router.delete("/instructivos/:id", deleteInstructivo);
 
+//Rutas para solicitudes
+router.get("/solicitudes", getSolicitudes);
+
+//verificar si del usuario
+router.get("/solicitudes/:id", getSolicitud);
+
+//esta autorizada
+router.post("/solicitudes", createSolicitud);
+
+//esta autorizada y empleado o admin
+router.put("/solicitudes/:id", updateSolicitud);
+
+//esta autorizada y admin
+router.delete("/solicitudes/:id", deleteSolicitud);
+
 module.exports = router;
-/*const { getNoticias, createNoticia, updateNoticia, deleteNoticia } = require('../controllers/noticias');
-const { getInstructivos, createInstructivo, updateInstructivo, deleteInstructivo } = require('../controllers/instructivos');
-const authenticate = require('../middlewares/authenticate');
-const authorize = require('../middlewares/authorize');
-
-
-module.exports = router; */

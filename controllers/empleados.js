@@ -1,6 +1,6 @@
 const empleados = require("../models/empleados");
 
-const getTodos = async (req, res) => {
+const getEmpleados = async (req, res) => {
   try {
     res.status(200).json(await empleados.find());
   } catch (e) {
@@ -10,7 +10,7 @@ const getTodos = async (req, res) => {
   }
 };
 
-const crear = async (req, res) => {
+const createEmpleado = async (req, res) => {
   try {
     const nuevoEmpleado = new Empleado(req.body);
     const empleadoGuardado = await nuevoEmpleado.save();
@@ -22,7 +22,7 @@ const crear = async (req, res) => {
   }
 };
 
-const getPorId = async (req, res) => {
+const getEmpleado = async (req, res) => {
   try {
     let id = req.params.id;
     const empleado = await empleados.findById(id);
@@ -41,7 +41,7 @@ const getPorId = async (req, res) => {
   }
 };
 
-const actualizarPorId = async (req, res) => {
+const updateEmpleado = async (req, res) => {
   try {
     let id = req.params.id;
     const empleadoActualizado = await empleados.findByIdAndUpdate(
@@ -60,11 +60,11 @@ const actualizarPorId = async (req, res) => {
       });
     }
   } catch (e) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: e });
   }
 };
 
-const eliminarPorId = async (req, res) => {
+const deleteEmpleado = async (req, res) => {
   try {
     let id = req.params.id;
     const empleadoEliminado = await empleados.findByIdAndDelete(id);
@@ -74,11 +74,11 @@ const eliminarPorId = async (req, res) => {
       res.status(404).json({ message: "Empleado no encontrado" });
     }
   } catch (e) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ mensaje: e });
   }
 };
 
-const verInfo = async (req, res) => {
+const getInfoEmpleado = async (req, res) => {
   try {
     //el middleware tiene que poner al empeado en el user
     const empleadoId = req.user.id;
@@ -95,10 +95,10 @@ const verInfo = async (req, res) => {
 };
 
 module.exports = {
-  getTodos,
-  crear,
-  getPorId,
-  actualizarPorId,
-  eliminarPorId,
-  verInfo,
+  getEmpleados,
+  createEmpleado,
+  getEmpleado,
+  updateEmpleado,
+  deleteEmpleado,
+  getInfoEmpleado,
 };

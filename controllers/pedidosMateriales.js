@@ -1,6 +1,6 @@
 const pedidosMaterialesModel = require("../models/pedidosMateriales");
 
-const getTodos = async (req, res) => {
+const getPedidos = async (req, res) => {
   try {
     res.status(200).json(await pedidosMaterialesModel.find());
   } catch (e) {
@@ -10,7 +10,7 @@ const getTodos = async (req, res) => {
   }
 };
 
-const crear = async (req, res) => {
+const createPedido = async (req, res) => {
   try {
     const nuevoPedidoMaterial = new pedidosMaterialesModel(req.body);
     const pedidoMaterialGuardado = await nuevoPedidoMaterial.save();
@@ -22,7 +22,7 @@ const crear = async (req, res) => {
   }
 };
 
-const getPorId = async (req, res) => {
+const getPedido = async (req, res) => {
   try {
     let id = req.params.id;
     const pedidoMaterial = await pedidosMaterialesModel.findById(id);
@@ -41,7 +41,7 @@ const getPorId = async (req, res) => {
   }
 };
 
-const actualizarPorId = async (req, res) => {
+const updatePedido = async (req, res) => {
   try {
     let id = req.params.id;
     const pedidoMaterialActualizado =
@@ -57,11 +57,11 @@ const actualizarPorId = async (req, res) => {
       });
     }
   } catch (e) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: e });
   }
 };
 
-const eliminarPorId = async (req, res) => {
+const deletePedido = async (req, res) => {
   try {
     let id = req.params.id;
     const pedidoMaterialEliminado =
@@ -72,14 +72,14 @@ const eliminarPorId = async (req, res) => {
       res.status(404).json({ message: "Pedido de material no encontrado" });
     }
   } catch (e) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: e });
   }
 };
 
 module.exports = {
-  getTodos,
-  crear,
-  getPorId,
-  actualizarPorId,
-  eliminarPorId,
+  getPedidos,
+  createPedido,
+  getPedido,
+  updatePedido,
+  deletePedido,
 };

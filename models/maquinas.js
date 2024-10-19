@@ -1,46 +1,59 @@
 const mongoose = require("mongoose");
 
-const maquinaSchema = new mongoose.Schema({
-    oficina: { //LAB_B
-        type: String,
-        required: true
+const maquinaSchema = new mongoose.Schema(
+  {
+    oficina: {
+      //LAB_B
+      type: String,
+      required: true,
     },
-    nombre: { //PC01 o LAB01
-        type: String,
-        required: true
+    nombre: {
+      //PC01 o LAB01
+      type: String,
+      required: true,
     },
     procesador: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
-    memoriaRAM: { //8GB TAMBIEN PODRIAMOS AÑADIR tipoRAM (DDR3, etc.) 
-        type: Number,
-        required: true
+    memoriaRAM: {
+      //8GB TAMBIEN PODRIAMOS AÑADIR tipoRAM (DDR3, etc.)
+      type: Number,
+      required: true,
     },
     tarjetaGrafica: {
-        type: String,
-        enum: ["NVIDIA", "AMD", "INTEL", "OTHER"],
-        required: true
+      type: String,
+      enum: ["NVIDIA", "AMD", "INTEL", "OTHER"],
+      required: true,
     },
-    motherboard:{
-        type: String,
-        required: true
+    motherboard: {
+      type: String,
+      required: true,
     },
     tamanhoDiscoSSD: {
-        type: Number,
-        required: true,
+      type: Number,
+      required: true,
     },
     tamanhoDiscoHDD: {
-        type: Number,
-        required: true,
+      type: Number,
+      required: true,
     },
     fechaUltimoMantenimiento: {
-        type: Date,
-        default: Date.now
+      type: Date,
+      default: Date.now,
     },
     empleadoResponsableMantenimiento: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Empleado",
-        required: true
-    }
-})
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Empleado",
+      required: true,
+    },
+  },
+  {
+    collection: "maquinas",
+    timestamps: true,
+  }
+);
+
+const Maquina = mongoose.model("Maquina", maquinaSchema);
+
+module.exports = Maquina;

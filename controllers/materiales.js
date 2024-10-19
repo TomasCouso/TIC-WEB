@@ -1,6 +1,6 @@
 const materialesModel = require("../models/materiales");
 
-const getTodos = async (req, res) => {
+const getMateriales = async (req, res) => {
   try {
     res.status(200).json(await materialesModel.find());
   } catch (e) {
@@ -10,7 +10,7 @@ const getTodos = async (req, res) => {
   }
 };
 
-const crear = async (req, res) => {
+const createMaterial = async (req, res) => {
   try {
     const nuevoMaterial = new materialesModel(req.body);
     const materialGuardado = await nuevoMaterial.save();
@@ -22,7 +22,7 @@ const crear = async (req, res) => {
   }
 };
 
-const getPorId = async (req, res) => {
+const getMaterial = async (req, res) => {
   try {
     let id = req.params.id;
     const mat = await materialesModel.findById(id);
@@ -41,7 +41,7 @@ const getPorId = async (req, res) => {
   }
 };
 
-const actualizarPorId = async (req, res) => {
+const updateMaterial = async (req, res) => {
   try {
     let id = req.params.id;
     const matActualizado = await materialesModel.findByIdAndUpdate(
@@ -58,11 +58,11 @@ const actualizarPorId = async (req, res) => {
       });
     }
   } catch (e) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: e });
   }
 };
 
-const eliminarPorId = async (req, res) => {
+const deleteMaterial = async (req, res) => {
   try {
     let id = req.params.id;
     const matEliminado = await materialesModel.findByIdAndDelete(id);
@@ -72,14 +72,14 @@ const eliminarPorId = async (req, res) => {
       res.status(404).json({ message: "Material no encontrado" });
     }
   } catch (e) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: e });
   }
 };
 
 module.exports = {
-  getTodos,
-  crear,
-  getPorId,
-  actualizarPorId,
-  eliminarPorId,
+  getMateriales,
+  createMaterial,
+  getMaterial,
+  updateMaterial,
+  deleteMaterial,
 };

@@ -3,17 +3,23 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  getTodos,
-  crear,
-  getPorId,
-  actualizarPorId,
-  eliminarPorId,
+  getMateriales,
+  getMaterial,
+  createMaterial,
+  updateMaterial,
+  deleteMaterial,
 } = require("../controllers/materiales");
 
 //middlewares
 
-router.route("/").get(getTodos).post(crear);
+router.get("/", getMateriales);
 
-router.route("/:id").get(getPorId).put(actualizarPorId).delete(eliminarPorId);
+router.get("/:id", getMaterial);
+
+router.post("/", createMaterial);
+
+router.put("/:id", updateMaterial);
+
+router.delete("/:id", deleteMaterial);
 
 module.exports = router;

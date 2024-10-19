@@ -3,12 +3,12 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  getTodos,
-  crear,
-  getPorId,
-  actualizarPorId,
-  eliminarPorId,
-  verInfo,
+  getEmpleados,
+  createEmpleado,
+  getEmpleado,
+  updateEmpleado,
+  deleteEmpleado,
+  getInfoEmpleado,
 } = require("../controllers/empleados");
 
 const { login } = require("../controllers/auth");
@@ -23,21 +23,20 @@ const { login } = require("../controllers/auth");
 router.post("/login", login);
 
 //desde aca necesita auth
-router.get("/", verInfo);
+router.get("/", getInfoEmpleado);
 
 //desde aca para admin
-router.get("/:id", getPorId);
+router.get("/:id", getEmpleado);
 
-router.get("/listar", getTodos);
+router.get("/listar", getEmpleados);
 
-router.post("/", crear);
+router.post("/", createEmpleado);
 
-router.put("/:id", actualizarPorId);
+router.put("/:id", updateEmpleado);
 
-router.delete("/:id", eliminarPorId);
+router.delete("/:id", deleteEmpleado);
 
 //cargar las otras rutas
-//falta Incluir el routes de Noticias pero creo que no sería aca
 //router.use("/maquinas", require("../routes/maquinas"));
 router.use("/materiales", require("../routes/materiales"));
 router.use("/pedidos", require("../routes/pedidosMateriales"));

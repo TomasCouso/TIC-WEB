@@ -26,8 +26,8 @@ const getIndex = async (req, res) => {
       instructivos,
       datos,
     });
-  } catch (error) {
-    res.status(500).json({ mensaje: "Error al obtener los datos", error });
+  } catch (e) {
+    res.status(500).json({ mensaje: e });
   }
 };
 
