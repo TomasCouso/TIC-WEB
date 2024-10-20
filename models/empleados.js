@@ -11,10 +11,20 @@ const empleadoSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      match: [
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+        "Invalid email",
+      ],
+    },
+    telefono: {
+      type: String,
+      required: true,
     },
     password: {
       type: String,
       required: true,
+      minlength: 8,
+      maxlength: 16,
     },
     rol: {
       type: String,
@@ -25,9 +35,8 @@ const empleadoSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    fechaIngreso: {
+    lastLogin: {
       type: Date,
-      default: Date.now,
     },
   },
   {
@@ -42,6 +51,20 @@ empleadoSchema.pre("save", async function (next) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(this.password, salt);
       this.password = hashedPassword;
+    }
+    next();
+  } catch (error) {
+    return next(error);
+  }
+});
+
+empleadoSchema.pre("findOneAndUpdate", async function (next) {
+  try {
+    const update = this.getUpdate();
+    if (update.password) {
+      const salt = await bcrypt.genSalt(10);
+      update.password = await bcrypt.hash(update.password, salt);
+      this.setUpdate(update);
     }
     next();
   } catch (error) {
