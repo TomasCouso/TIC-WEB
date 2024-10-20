@@ -1,5 +1,5 @@
-const Noticia = require("../models/noticia");
-const Instructivo = require("../models/instructivo");
+const Noticia = require("../models/noticias");
+const Instructivo = require("../models/instructivos");
 const Empleado = require("../models/empleados");
 
 const getIndex = async (req, res) => {

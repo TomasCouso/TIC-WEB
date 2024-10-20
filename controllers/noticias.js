@@ -1,4 +1,4 @@
-const Noticia = require("../models/noticia");
+const Noticia = require("../models/noticias");
 
 const getNoticias = async (req, res) => {
   try {

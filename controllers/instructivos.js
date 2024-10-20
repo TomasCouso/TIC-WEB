@@ -1,4 +1,4 @@
-const Instructivo = require("../models/instructivo");
+const Instructivo = require("../models/instructivos");
 
 const getInstructivos = async (req, res) => {
   try {
