@@ -10,16 +10,19 @@ const pedidoMaterialSchema = new mongoose.Schema(
     cantidadSolicitada: {
       type: Number,
       required: true,
+      min: [1, "La cantidad solicitada debe ser mayor a cero"],
     },
     estado: {
       type: String,
       enum: ["pendiente", "en proceso", "completado", "cancelado"],
       default: "pendiente",
+      index: true, 
     },
     empleado: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Empleado",
       required: true,
+      index: true,
     },
     fechaSolicitud: {
       type: Date,
