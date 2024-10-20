@@ -5,10 +5,14 @@ const materialSchema = new mongoose.Schema(
     nombre: {
       type: String,
       required: true,
+      minlength: [3, "El nombre debe tener al menos 3 caracteres"],
+      maxlength: [100, "El nombre no debe superar los 100 caracteres"],
+      index: true,
     },
     cantidad: {
       type: Number,
       required: true,
+      min: [0, "La cantidad no puede ser negativa"],
     },
     proveedor: {
       type: String,
