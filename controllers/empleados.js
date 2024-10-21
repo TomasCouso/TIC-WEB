@@ -1,8 +1,9 @@
-const empleados = require("../models/empleados");
+const Empleado = require("../models/empleados");
+const PedidoMaterial = require("../models/pedidosMateriales");
 
 const getEmpleados = async (req, res) => {
   try {
-    res.status(200).json(await empleados.find());
+    res.status(200).json(await Empleado.find());
   } catch (e) {
     res.status(500).json({
       mensaje: e,
@@ -25,7 +26,7 @@ const createEmpleado = async (req, res) => {
 const getEmpleado = async (req, res) => {
   try {
     let id = req.params.id;
-    const empleado = await empleados.findById(id);
+    const empleado = await Empleado.findById(id);
     if (empleado) {
       res.status(200).json(empleado);
     } else {
@@ -43,14 +44,24 @@ const getEmpleado = async (req, res) => {
 
 const updateEmpleado = async (req, res) => {
   try {
-    let id = req.params.id;
-    const empleadoActualizado = await empleados.findByIdAndUpdate(
-      id,
-      req.body,
-      {
-        new: true,
-      }
-    );
+    const id = req.params.id;
+
+    const empleadoAnterior = await Empleado.findById(id);
+    if (!empleadoAnterior) {
+      res.status(404).json({ mensaje: "Empleado no encontrado" });
+    }
+
+    const empleadoActualizado = await Empleado.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+
+    if (empleadoActualizado && empleadoAnterior.nombre !== empleadoActualizado.nombre) {
+      await PedidoMaterial.updateMany(
+        { "empleado.id": id }, 
+        { $set: { "empleado.nombre": empleadoActualizado.nombre } }
+      );
+    }
+
     if (empleadoActualizado) {
       res.status(200).json(empleadoActualizado);
     } else {
@@ -66,8 +77,9 @@ const updateEmpleado = async (req, res) => {
 
 const deleteEmpleado = async (req, res) => {
   try {
-    let id = req.params.id;
-    const empleadoEliminado = await empleados.findByIdAndDelete(id);
+    //agregar relacion con los pedidos
+    const id = req.params.id;
+    const empleadoEliminado = await Empleado.findByIdAndDelete(id);
     if (empleadoEliminado) {
       res.status(200).json({ message: "Empleado eliminado" });
     } else {
@@ -82,13 +94,23 @@ const getInfoEmpleado = async (req, res) => {
   try {
     //el middleware tiene que poner al empeado en el user
     const empleadoId = req.user.id;
-    const empleado = await empleados.findById(empleadoId);
+    const empleado = await Empleado.findById(empleadoId);
 
-    if (empleado) {
-      res.status(200).json(empleado);
-    } else {
+    if (!empleado) {
       res.status(404).json({ mensaje: "Empleado no encontrado" });
     }
+
+    const pedidosPendientes = empleado.pedidosMateriales.filter(
+      (pedido) => pedido.estado === "pendiente"
+    );
+
+    //solicitudes a nombre del empleado
+
+    res.status(200).json({
+      empleado,
+      pedidosPendientes,
+      //solicitudes,
+    });
   } catch (e) {
     res.status(500).json({ mensaje: e });
   }
