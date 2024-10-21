@@ -38,10 +38,22 @@ const empleadoSchema = new mongoose.Schema(
     lastLogin: {
       type: Date,
     },
-    pedidosMateriales: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "PedidoMaterial",
-    },
+    pedidosMateriales: [
+      {
+        materiales: {
+          id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Material",
+            required: true,
+          },
+          nombre: String,
+          cantidadSolicitada: Number,
+        },
+        descripcion: String,
+        estado: String,
+        fechaSolicitud: Date,
+      },
+    ],
   },
   {
     collection: "empleados",
