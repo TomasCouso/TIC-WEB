@@ -1,8 +1,9 @@
-const pedidosMaterialesModel = require("../models/pedidosMateriales");
+const PedidosMateriales = require("../models/pedidosMateriales");
+const Empleado = require("../models/empleados");
 
 const getPedidos = async (req, res) => {
   try {
-    res.status(200).json(await pedidosMaterialesModel.find());
+    res.status(200).json(await PedidosMateriales.find());
   } catch (e) {
     res.status(500).json({
       mensaje: e,
@@ -12,8 +13,32 @@ const getPedidos = async (req, res) => {
 
 const createPedido = async (req, res) => {
   try {
-    const nuevoPedidoMaterial = new pedidosMaterialesModel(req.body);
+    const empleadoId = await Empleado.findById(req.user.id);
+
+    const empleado = await Empleado.findById(empleadoId);
+    if (!empleado) {
+      res.status(404).json({ mensaje: "Empleado no encontrado" });
+    }
+
+    const nuevoPedidoMaterial = new PedidosMateriales({
+      ...req.body,
+      empleado: {
+        id: empleadoId,
+        nombre: empleado.nombre,
+      },
+    });
+
     const pedidoMaterialGuardado = await nuevoPedidoMaterial.save();
+
+    empleado.pedidosMateriales.push({
+      materiales: pedidoMaterialGuardado.materiales,
+      descripcion: pedidoMaterialGuardado.descripcion,
+      estado: pedidoMaterialGuardado.estado,
+      fechaSolicitud: pedidoMaterialGuardado.fechaSolicitud,
+    });
+
+    await empleado.save();
+
     res.status(201).json(pedidoMaterialGuardado);
   } catch (e) {
     res.status(500).json({
@@ -24,8 +49,8 @@ const createPedido = async (req, res) => {
 
 const getPedido = async (req, res) => {
   try {
-    let id = req.params.id;
-    const pedidoMaterial = await pedidosMaterialesModel.findById(id);
+    const id = req.params.id;
+    const pedidoMaterial = await PedidosMateriales.findById(id);
     if (pedidoMaterial) {
       res.status(200).json(pedidoMaterial);
     } else {
@@ -43,29 +68,58 @@ const getPedido = async (req, res) => {
 
 const updatePedido = async (req, res) => {
   try {
-    let id = req.params.id;
-    const pedidoMaterialActualizado =
-      await pedidosMaterialesModel.findByIdAndUpdate(id, req.body, {
+    const id = req.params.id;
+
+    const pedidoMaterialActualizado = await PedidosMateriales.findByIdAndUpdate(
+      id,
+      req.body,
+      {
         new: true,
-      });
-    if (pedidoMaterialActualizado) {
-      res.status(200).json(pedidoMaterialActualizado);
-    } else {
+        runValidators: true,
+      }
+    );
+
+    if (!pedidoMaterialActualizado) {
       res.status(404).json({
         id,
         actualizado: false,
       });
     }
+
+    const pedidoEmpleadoActualizado = await Empleado.updateOne(
+      { "pedidosMateriales._id": id },
+      {
+        $set: {
+          "pedidosMateriales.$.materiales":
+            pedidoMaterialActualizado.materiales,
+          "pedidosMateriales.$.descripcion":
+            pedidoMaterialActualizado.descripcion,
+          "pedidosMateriales.$.estado": pedidoMaterialActualizado.estado,
+          "pedidosMateriales.$.fechaSolicitud":
+            pedidoMaterialActualizado.fechaSolicitud,
+        },
+      }
+    );
+
+    if (pedidoEmpleadoActualizado.modifiedCount === 0) {
+      res
+        .status(404)
+        .json({ mensaje: "Pedido no encontrado o no se realizaron cambios" });
+    }
+
+    res.status(200).json({ mensaje: "Pedido actualizado exitosamente" });
   } catch (e) {
     res.status(500).json({ message: e });
   }
 };
 
 const deletePedido = async (req, res) => {
+  //agregar relacion con los empleados
   try {
     let id = req.params.id;
-    const pedidoMaterialEliminado =
-      await pedidosMaterialesModel.findByIdAndDelete(id);
+    const pedidoMaterialEliminado = await PedidosMateriales.findByIdAndDelete(
+      id
+    );
     if (pedidoMaterialEliminado) {
       res.status(200).json({ message: "Pedido de material eliminado" });
     } else {

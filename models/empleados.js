@@ -40,6 +40,11 @@ const empleadoSchema = new mongoose.Schema(
     },
     pedidosMateriales: [
       {
+        id : {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "PedidoMaterial",
+          required: true,
+        },
         materiales: {
           id: {
             type: mongoose.Schema.Types.ObjectId,

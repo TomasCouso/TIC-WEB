@@ -55,9 +55,12 @@ const updateEmpleado = async (req, res) => {
       new: true,
     });
 
-    if (empleadoActualizado && empleadoAnterior.nombre !== empleadoActualizado.nombre) {
+    if (
+      empleadoActualizado &&
+      empleadoAnterior.nombre !== empleadoActualizado.nombre
+    ) {
       await PedidoMaterial.updateMany(
-        { "empleado.id": id }, 
+        { "empleado.id": id },
         { $set: { "empleado.nombre": empleadoActualizado.nombre } }
       );
     }
