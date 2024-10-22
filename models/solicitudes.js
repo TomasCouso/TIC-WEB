@@ -15,9 +15,12 @@ const solicitudSchema = new mongoose.Schema(
             required: true,
         },
         categoria: {
-            type: mongoose.Schema.Types.ObjectId, // Referencia a la categoría
-            ref: 'Categoria',
-            required: true,
+            _id: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Categoria",
+                required: true,
+            },
+            nombre: String,
         },
         fechaSolicitud: {
             type: Date,

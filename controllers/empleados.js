@@ -60,7 +60,7 @@ const updateEmpleado = async (req, res) => {
       empleadoAnterior.nombre !== empleadoActualizado.nombre
     ) {
       await PedidoMaterial.updateMany(
-        { "empleado.id": id },
+        { "empleado._id": id },
         { $set: { "empleado.nombre": empleadoActualizado.nombre } }
       );
     }

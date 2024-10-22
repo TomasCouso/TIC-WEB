@@ -31,28 +31,15 @@ const empleadoSchema = new mongoose.Schema(
       enum: ["admin", "empleado"],
       default: "empleado",
     },
-    activo: {
-      type: Boolean,
-      default: true,
-    },
     lastLogin: {
       type: Date,
     },
     pedidosMateriales: [
       {
-        id : {
+        _id: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "PedidoMaterial",
           required: true,
-        },
-        materiales: {
-          id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Material",
-            required: true,
-          },
-          nombre: String,
-          cantidadSolicitada: Number,
         },
         descripcion: String,
         estado: String,

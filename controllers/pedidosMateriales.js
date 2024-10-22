@@ -31,7 +31,6 @@ const createPedido = async (req, res) => {
     const pedidoMaterialGuardado = await nuevoPedidoMaterial.save();
 
     empleado.pedidosMateriales.push({
-      materiales: pedidoMaterialGuardado.materiales,
       descripcion: pedidoMaterialGuardado.descripcion,
       estado: pedidoMaterialGuardado.estado,
       fechaSolicitud: pedidoMaterialGuardado.fechaSolicitud,
@@ -90,8 +89,6 @@ const updatePedido = async (req, res) => {
       { "pedidosMateriales._id": id },
       {
         $set: {
-          "pedidosMateriales.$.materiales":
-            pedidoMaterialActualizado.materiales,
           "pedidosMateriales.$.descripcion":
             pedidoMaterialActualizado.descripcion,
           "pedidosMateriales.$.estado": pedidoMaterialActualizado.estado,
