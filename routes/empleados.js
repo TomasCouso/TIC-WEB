@@ -20,25 +20,25 @@ const { login } = require("../controllers/auth");
     activo?
 }*/
 
+//cargar las otras rutas
+//router.use("/maquinas", require("../routes/maquinas"));
+router.use("/materiales", require("../routes/materiales"));
+router.use("/pedidos", require("../routes/pedidosMateriales"));
+
 router.post("/login", login);
 
 //desde aca necesita auth
 router.get("/", getInfoEmpleado);
 
 //desde aca para admin
-router.get("/:id", getEmpleado);
-
 router.get("/listar", getEmpleados);
+
+router.get("/:id", getEmpleado);
 
 router.post("/", createEmpleado);
 
 router.put("/:id", updateEmpleado);
 
 router.delete("/:id", deleteEmpleado);
-
-//cargar las otras rutas
-//router.use("/maquinas", require("../routes/maquinas"));
-router.use("/materiales", require("../routes/materiales"));
-router.use("/pedidos", require("../routes/pedidosMateriales"));
 
 module.exports = router;
