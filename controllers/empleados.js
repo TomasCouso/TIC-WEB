@@ -74,22 +74,41 @@ const updateEmpleado = async (req, res) => {
       });
     }
   } catch (e) {
-    res.status(500).json({ message: e });
+    res.status(500).json({ message: e.message });
   }
 };
 
 const deleteEmpleado = async (req, res) => {
   try {
-    //agregar relacion con los pedidos
     const id = req.params.id;
+
     const empleadoEliminado = await Empleado.findByIdAndDelete(id);
-    if (empleadoEliminado) {
-      res.status(200).json({ message: "Empleado eliminado" });
-    } else {
+
+    if (!empleadoEliminado) {
       res.status(404).json({ message: "Empleado no encontrado" });
     }
+
+    const pedidoEmpeladoEliminado = await PedidoMaterial.updateMany(
+      { "empleado._id": id },
+      {
+        $set: {
+          "empleado.nombre": `${empleadoEliminado.nombre} (empleado eliminado)`,
+          estado: "cancelado",
+        },
+      }
+    );
+
+    if (pedidoEmpeladoEliminado.modifiedCount === 0) {
+      res
+        .status(404)
+        .json({ mensaje: "Empleado no encontrado o no se realizaron cambios" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Empleado eliminado y pedidos actualizados" });
   } catch (e) {
-    res.status(500).json({ mensaje: e });
+    res.status(500).json({ mensaje: e.message });
   }
 };
 
