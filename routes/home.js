@@ -15,19 +15,4 @@ router.get("/", getIndex);
 //Seria login para poder hacer solicitudes
 router.get("/login", login);
 
-//Rutas para solicitudes
-router.get("/solicitudes", getSolicitudes);
-
-//verificar si del usuario
-router.get("/solicitudes/:id", getSolicitud);
-
-//esta autorizada
-router.post("/solicitudes", createSolicitud);
-
-//esta autorizada y empleado o admin
-router.put("/solicitudes/:id", updateSolicitud);
-
-//esta autorizada y admin
-router.delete("/solicitudes/:id", deleteSolicitud);
-
 module.exports = router;
