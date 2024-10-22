@@ -1,9 +1,13 @@
 const PedidosMateriales = require("../models/pedidosMateriales");
 const Empleado = require("../models/empleados");
+const Material = require("../models/materiales");
 
 const getPedidos = async (req, res) => {
   try {
-    res.status(200).json(await PedidosMateriales.find());
+    res
+      .status(200)
+      .json(await PedidosMateriales.find())
+      .toJSON();
   } catch (e) {
     res.status(500).json({
       mensaje: e,
@@ -13,17 +17,34 @@ const getPedidos = async (req, res) => {
 
 const createPedido = async (req, res) => {
   try {
-    const empleadoId = await Empleado.findById(req.user.id);
+    const empleadoId = await Empleado.findById(req.body.empleadoId);
 
     const empleado = await Empleado.findById(empleadoId);
     if (!empleado) {
       res.status(404).json({ mensaje: "Empleado no encontrado" });
     }
 
+    const materialesValidos = await Promise.all(
+      req.body.materiales.map(async (material) => {
+        const materialEncontrado = await Material.findById(material._id);
+        return materialEncontrado ? materialEncontrado : null;
+      })
+    );
+
+    const materialesNoEncontrados = materialesValidos.filter(
+      (material) => material === null
+    );
+    if (materialesNoEncontrados.length > 0) {
+      return res.status(404).json({
+        mensaje: "Algunos materiales no fueron encontrados",
+        materialesNoEncontrados,
+      });
+    }
+
     const nuevoPedidoMaterial = new PedidosMateriales({
       ...req.body,
       empleado: {
-        id: empleadoId,
+        _id: empleadoId,
         nombre: empleado.nombre,
       },
     });
@@ -31,6 +52,7 @@ const createPedido = async (req, res) => {
     const pedidoMaterialGuardado = await nuevoPedidoMaterial.save();
 
     empleado.pedidosMateriales.push({
+      _id: pedidoMaterialGuardado._id,
       descripcion: pedidoMaterialGuardado.descripcion,
       estado: pedidoMaterialGuardado.estado,
       fechaSolicitud: pedidoMaterialGuardado.fechaSolicitud,

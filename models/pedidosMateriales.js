@@ -4,7 +4,7 @@ const pedidoMaterialSchema = new mongoose.Schema(
   {
     materiales: [
       {
-        id: {
+        _id: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Material",
           required: true,
@@ -30,7 +30,7 @@ const pedidoMaterialSchema = new mongoose.Schema(
       required: true,
     },
     empleado: {
-      id: {
+      _id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Empleado",
         required: true,
