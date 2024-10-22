@@ -2,6 +2,11 @@ const Instructivo = require("../models/instructivos");
 
 const getInstructivos = async (req, res) => {
   try {
+   /* if (req.auth){
+      Instructivo.getautorizados
+    }else{
+      Instructivo.getNoAuth
+    }*/
     res.status(200).json(await Instructivo.find());
   } catch (e) {
     res.status(500).json({
