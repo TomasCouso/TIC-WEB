@@ -94,10 +94,7 @@ const updatePedido = async (req, res) => {
     const pedidoMaterialActualizado = await PedidosMateriales.findByIdAndUpdate(
       id,
       req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
+      { new: true, runValidators: true }
     );
 
     if (!pedidoMaterialActualizado) {

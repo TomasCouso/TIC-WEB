@@ -1,8 +1,9 @@
-const materialesModel = require("../models/materiales");
+const Material = require("../models/materiales");
+const PedidoMaterial = require("../models/pedidosMateriales");
 
 const getMateriales = async (req, res) => {
   try {
-    res.status(200).json(await materialesModel.find());
+    res.status(200).json(await Material.find());
   } catch (e) {
     res.status(500).json({
       mensaje: e,
@@ -12,7 +13,7 @@ const getMateriales = async (req, res) => {
 
 const createMaterial = async (req, res) => {
   try {
-    const nuevoMaterial = new materialesModel(req.body);
+    const nuevoMaterial = new Material(req.body);
     const materialGuardado = await nuevoMaterial.save();
     res.status(201).json(materialGuardado);
   } catch (e) {
@@ -25,7 +26,7 @@ const createMaterial = async (req, res) => {
 const getMaterial = async (req, res) => {
   try {
     let id = req.params.id;
-    const mat = await materialesModel.findById(id);
+    const mat = await Material.findById(id);
     if (mat) {
       res.status(200).json(mat);
     } else {
@@ -43,29 +44,41 @@ const getMaterial = async (req, res) => {
 
 const updateMaterial = async (req, res) => {
   try {
-    let id = req.params.id;
-    const matActualizado = await materialesModel.findByIdAndUpdate(
-      id,
-      req.body,
-      { new: true }
-    );
-    if (matActualizado) {
-      res.status(200).json(materialActualizado);
-    } else {
+    const id = req.params.id;
+
+    const matActualizado = await Material.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!matActualizado) {
       res.status(404).json({
         id,
         actualizado: false,
       });
     }
+
+    const pedidoMaterialActualizado = await PedidoMaterial.updateMany(
+      { "materiales._id": id },
+      { $set: { "materiales.$.nombre": matActualizado.nombre } }
+    );
+
+    if (pedidoMaterialActualizado.modifiedCount === 0) {
+      res
+        .status(404)
+        .json({ mensaje: "Material no encontrado o no se realizaron cambios" });
+    }
+
+    res.status(200).json(matActualizado);
   } catch (e) {
-    res.status(500).json({ message: e });
+    res.status(500).json({ message: e.message });
   }
 };
 
 const deleteMaterial = async (req, res) => {
   try {
     let id = req.params.id;
-    const matEliminado = await materialesModel.findByIdAndDelete(id);
+    const matEliminado = await Material.findByIdAndDelete(id);
     if (matEliminado) {
       res.status(200).json({ message: "Material eliminado" });
     } else {
