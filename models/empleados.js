@@ -13,7 +13,7 @@ const empleadoSchema = new mongoose.Schema(
       unique: true,
       match: [
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        "Invalid email",
+        "Email inválido",
       ],
     },
     telefono: {
@@ -24,6 +24,7 @@ const empleadoSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: 8,
+      trim: true,
     },
     rol: {
       type: String,
@@ -42,6 +43,18 @@ const empleadoSchema = new mongoose.Schema(
         },
         descripcion: String,
         estado: String,
+        fechaSolicitud: Date,
+      },
+    ],
+    solicitudes: [
+      {
+        _id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Solicitud",
+          required: true,
+        },
+        asunto: String,
+        emailSolicitante: String,
         fechaSolicitud: Date,
       },
     ],
