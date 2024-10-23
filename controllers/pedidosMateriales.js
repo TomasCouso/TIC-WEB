@@ -4,14 +4,9 @@ const Material = require("../models/materiales");
 
 const getPedidos = async (req, res) => {
   try {
-    res
-      .status(200)
-      .json(await PedidosMateriales.find())
-      .toJSON();
+    res.status(200).json(await PedidosMateriales.find());
   } catch (e) {
-    res.status(500).json({
-      mensaje: e,
-    });
+    res.status(500).json({ mensaje: e.menssage });
   }
 };
 
@@ -62,9 +57,7 @@ const createPedido = async (req, res) => {
 
     res.status(201).json(pedidoMaterialGuardado);
   } catch (e) {
-    res.status(500).json({
-      mensaje: e,
-    });
+    res.status(500).json({ mensaje: e.message });
   }
 };
 
@@ -81,9 +74,7 @@ const getPedido = async (req, res) => {
       });
     }
   } catch (e) {
-    res.status(500).json({
-      mensaje: e,
-    });
+    res.status(500).json({ mensaje: e.message });
   }
 };
 
@@ -118,14 +109,16 @@ const updatePedido = async (req, res) => {
     );
 
     if (pedidoEmpleadoActualizado.modifiedCount === 0) {
-      res
-        .status(404)
-        .json({ mensaje: "Pedido no encontrado o no se realizaron cambios en Empleado" });
+      res.status(404).json({
+        mensaje: "Pedido no encontrado o no se realizaron cambios en Empleado",
+      });
     }
 
-    res.status(200).json({ mensaje: "Pedido actualizado exitosamente, Empleado actualizado" });
+    res.status(200).json({
+      mensaje: "Pedido actualizado exitosamente, Empleado actualizado",
+    });
   } catch (e) {
-    res.status(500).json({ message: e });
+    res.status(500).json({ message: e.message });
   }
 };
 

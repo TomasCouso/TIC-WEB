@@ -5,9 +5,7 @@ const getEmpleados = async (req, res) => {
   try {
     res.status(200).json(await Empleado.find());
   } catch (e) {
-    res.status(500).json({
-      mensaje: e,
-    });
+    res.status(500).json({ mensaje: e.message });
   }
 };
 
@@ -17,9 +15,7 @@ const createEmpleado = async (req, res) => {
     const empleadoGuardado = await nuevoEmpleado.save();
     res.status(201).json(empleadoGuardado);
   } catch (e) {
-    res.status(500).json({
-      mensaje: e,
-    });
+    res.status(500).json({ mensaje: e.message });
   }
 };
 
@@ -36,9 +32,7 @@ const getEmpleado = async (req, res) => {
       });
     }
   } catch (e) {
-    res.status(500).json({
-      mensaje: e,
-    });
+    res.status(500).json({ mensaje: e.message });
   }
 };
 
@@ -134,7 +128,7 @@ const getInfoEmpleado = async (req, res) => {
       //solicitudes,
     });
   } catch (e) {
-    res.status(500).json({ mensaje: e });
+    res.status(500).json({ mensaje: e.message });
   }
 };
 
