@@ -13,7 +13,6 @@ const categoriaSchema = new mongoose.Schema(
     },
     {
         collection: "categorias",
-        timestamps: true,
     }
 );
 
