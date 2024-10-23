@@ -23,3 +23,5 @@ router.put("/:id", updateSolicitud);
 
 //esta autorizada y admin
 router.delete("/:id", deleteSolicitud);
+
+module.exports = router;

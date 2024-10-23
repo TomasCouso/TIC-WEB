@@ -21,3 +21,5 @@ router.put("/:id", updateInstructivo);
 
 //esta autorizada y admin
 router.delete("/:id", deleteInstructivo);
+
+module.exports = router;
