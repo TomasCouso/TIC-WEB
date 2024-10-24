@@ -50,7 +50,7 @@ const createPedido = async (req, res) => {
       _id: pedidoMaterialGuardado._id,
       descripcion: pedidoMaterialGuardado.descripcion,
       estado: pedidoMaterialGuardado.estado,
-      fechaSolicitud: pedidoMaterialGuardado.fechaSolicitud,
+      fechaSolicitud: pedidoMaterialGuardado.createdAt,
     });
 
     await empleado.save();
@@ -102,8 +102,6 @@ const updatePedido = async (req, res) => {
           "pedidosMateriales.$.descripcion":
             pedidoMaterialActualizado.descripcion,
           "pedidosMateriales.$.estado": pedidoMaterialActualizado.estado,
-          "pedidosMateriales.$.fechaSolicitud":
-            pedidoMaterialActualizado.fechaSolicitud,
         },
       }
     );

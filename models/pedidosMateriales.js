@@ -41,10 +41,6 @@ const pedidoMaterialSchema = new mongoose.Schema(
         required: true,
       },
     },
-    fechaSolicitud: {
-      type: Date,
-      default: Date.now,
-    },
   },
   {
     collection: "pedidosMateriales",

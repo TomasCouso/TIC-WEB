@@ -88,43 +88,9 @@ const deleteEmpleado = async (req, res) => {
       res.status(404).json({ message: "Empleado no encontrado" });
     }
 
-    if (empleadoEliminado.pedidosMateriales.length > 0) {
-      const pedidosEmpeladoEliminados = await PedidoMaterial.updateMany(
-        { "empleado._id": id },
-        {
-          $set: {
-            "empleado.nombre": `${empleadoEliminado.nombre} (empleado eliminado)`,
-            estado: "cancelado",
-          },
-        }
-      );
-
-      if (pedidosEmpeladoEliminados.modifiedCount === 0) {
-        res.status(404).json({
-          mensaje:
-            "Empleado no encontrado o no se realizaron cambios en pedidos",
-        });
-      }
-    }
-
-    if (empleadoEliminado.solicitudes.length > 0) {
-      const solicitudesEmpleadoEliminadas = await Solicitud.updateMany(
-        { "empleado._id": id },
-        {
-          $set: {
-            "empleado.nombre": `${empleadoEliminado.nombre} (empleado eliminado)`,
-            estado: "cancelado",
-          },
-        }
-      );
-
-      if (solicitudesEmpleadoEliminadas.modifiedCount === 0) {
-        res.status(404).json({
-          mensaje:
-            "Empleado no encontrado o no se realizaron cambiosen solicitudes",
-        });
-      }
-    }
+    await PedidoMaterial.deleteMany({ "empleado._id": id });
+    
+    await Solicitud.deleteMany({ "empleado._id": id });
 
     res.status(200).json({
       message: "Empleado eliminado, pedidos y solicitudes actualizadas",
