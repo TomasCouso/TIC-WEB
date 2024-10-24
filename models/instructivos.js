@@ -22,12 +22,20 @@ const instructivoSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    soloEmpleados: { //AGREGO BOOLEAN PARA UTILIZARLO EN LAS SOLICITUDES DE INSTRUCTIVOS TANTO DESDE CLIENTE COMO DE EMPLEADOS
+    categoria: {
+      _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Categoria",
+        required: true,
+      },
+      nombre: String,
+    },
+    soloEmpleados: {
+      //AGREGO BOOLEAN PARA UTILIZARLO EN LAS SOLICITUDES DE INSTRUCTIVOS TANTO DESDE CLIENTE COMO DE EMPLEADOS
       type: Boolean,
       required: false,
       default: false,
-    }
-
+    },
   },
   {
     collection: "instructivos",
