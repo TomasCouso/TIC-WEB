@@ -95,7 +95,7 @@ const updatePedido = async (req, res) => {
       });
     }
 
-    const pedidoEmpleadoActualizado = await Empleado.updateOne(
+    const empleadoPedidoActualizado = await Empleado.updateOne(
       { "pedidosMateriales._id": id },
       {
         $set: {
@@ -108,14 +108,14 @@ const updatePedido = async (req, res) => {
       }
     );
 
-    if (pedidoEmpleadoActualizado.modifiedCount === 0) {
+    if (empleadoPedidoActualizado.modifiedCount === 0) {
       res.status(404).json({
         mensaje: "Pedido no encontrado o no se realizaron cambios en Empleado",
       });
     }
 
     res.status(200).json({
-      mensaje: "Pedido actualizado exitosamente, Empleado actualizado",
+      mensaje: "Pedido actualizado exitosamente, Empleado actualizado", pedidoMaterialActualizado
     });
   } catch (e) {
     res.status(500).json({ message: e.message });
