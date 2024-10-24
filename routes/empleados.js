@@ -22,8 +22,8 @@ const { login } = require("../controllers/auth");
 
 //cargar las otras rutas
 //router.use("/maquinas", require("../routes/maquinas"));
-router.use("/materiales", require("../routes/materiales"));
-router.use("/pedidos", require("../routes/pedidosMateriales"));
+router.use("/materiales", require("./materiales"));
+router.use("/pedidos", require("./pedidosMateriales"));
 
 router.post("/login", login);
 
