@@ -58,16 +58,10 @@ const updateMaterial = async (req, res) => {
       });
     }
 
-    const pedidoMaterialActualizado = await PedidoMaterial.updateMany(
+    await PedidoMaterial.updateMany(
       { "materiales._id": id },
       { $set: { "materiales.$.nombre": matActualizado.nombre } }
     );
-
-    if (pedidoMaterialActualizado.modifiedCount === 0) {
-      res
-        .status(404)
-        .json({ mensaje: "Material no encontrado o no se realizaron cambios" });
-    }
 
     res.status(200).json(matActualizado);
   } catch (e) {
@@ -95,12 +89,10 @@ const deleteMaterial = async (req, res) => {
       }
     );
 
-    res
-      .status(200)
-      .json({
-        message: "Material eliminado y pedidos actualizados",
-        pedidoMaterialActualizado,
-      });
+    res.status(200).json({
+      message: "Material eliminado y pedidos actualizados",
+      pedidoMaterialActualizado,
+    });
   } catch (e) {
     res.status(500).json({ message: e.message });
   }

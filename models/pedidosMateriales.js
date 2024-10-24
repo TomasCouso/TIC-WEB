@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Empleado = require("./empleados");
 
 const pedidoMaterialSchema = new mongoose.Schema(
   {
@@ -50,6 +51,39 @@ const pedidoMaterialSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+pedidoMaterialSchema.pre("updateMany", async function (next) {
+  const update = this.getUpdate();
+
+  const estado = update.$set?.estado;
+
+  if (estado !== "cancelado") {
+    return next();
+  }
+
+  const filter = this.getFilter();
+
+  try {
+    const pedidos = await PedidoMaterial.find(filter);
+
+    await Promise.all(
+      pedidos.map(async (pedido) => {
+        return await Empleado.updateOne(
+          { "pedidosMateriales._id": pedido._id },
+          {
+            $set: {
+              "pedidosMateriales.$.estado": "cancelado",
+            },
+          }
+        );
+      })
+    );
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 const PedidoMaterial = mongoose.model("PedidoMaterial", pedidoMaterialSchema);
 

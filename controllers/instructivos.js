@@ -9,13 +9,10 @@ const getInstructivos = async (req, res) => {
     } else {
       instructivos = await Instructivo.find({ soloEmpleados: false }); //DEVUELVO SOLO LOS INSTRUCTIVOS QUE NO SON PARA EMPLEADOS
     }
-    
-    return res.status(200).json(instructivos);
 
+    return res.status(200).json(instructivos);
   } catch (e) {
-    res.status(500).json({
-      mensaje: e,
-    });
+    res.status(500).json({ mensaje: e.message });
   }
 };
 
@@ -32,9 +29,7 @@ const getInstructivo = async (req, res) => {
       });
     }
   } catch (e) {
-    res.status(500).json({
-      mensaje: e,
-    });
+    res.status(500).json({ mensaje: e.message });
   }
 };
 
@@ -44,9 +39,7 @@ const createInstructivo = async (req, res) => {
     const instructivoGuardado = await nuevoInstructivo.save();
     res.status(201).json(instructivoGuardado);
   } catch (e) {
-    res.status(500).json({
-      mensaje: e,
-    });
+    res.status(500).json({ mensaje: e.message });
   }
 };
 
@@ -58,6 +51,7 @@ const updateInstructivo = async (req, res) => {
       req.body,
       {
         new: true,
+        runValidators: true,
       }
     );
     if (instructivoActualizado) {
@@ -69,7 +63,7 @@ const updateInstructivo = async (req, res) => {
       });
     }
   } catch (e) {
-    res.status(500).json({ mensaje: e });
+    res.status(500).json({ mensaje: e.message });
   }
 };
 
@@ -83,7 +77,7 @@ const deleteInstructivo = async (req, res) => {
       res.status(404).json({ mensaje: "Instructivo no encontrado" });
     }
   } catch (e) {
-    res.status(500).json({ mensaje: e });
+    res.status(500).json({ mensaje: e.message });
   }
 };
 

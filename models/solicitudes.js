@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Empleado = require("./empleados");
 
 const solicitudSchema = new mongoose.Schema(
   {
@@ -39,7 +40,7 @@ const solicitudSchema = new mongoose.Schema(
     },
     estado: {
       type: String,
-      enum: ["pendiente", "en proceso", "completado", "cancelado"],
+      enum: ["pendiente", "en proceso", "completada", "cancelada"],
       default: "pendiente",
     },
   },
@@ -48,6 +49,39 @@ const solicitudSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+solicitudSchema.pre("updateMany", async function (next) {
+  const update = this.getUpdate();
+
+  const estado = update.$set?.estado;
+
+  if (estado !== "cancelada") {
+    return next();
+  }
+
+  const filter = this.getFilter();
+
+  try {
+    const solicitudes = await Solicitud.find(filter);
+
+    await Promise.all(
+      solicitudes.map(async (solicitud) => {
+        return await Empleado.updateOne(
+          { "solicitudes._id": solicitud._id },
+          {
+            $set: {
+              "solicitudes.$.estado": "cancelada",
+            },
+          }
+        );
+      })
+    );
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 const Solicitud = mongoose.model("Solicitud", solicitudSchema);
 
