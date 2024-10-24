@@ -37,6 +37,11 @@ const solicitudSchema = new mongoose.Schema(
         required: true,
       },
     },
+    estado: {
+      type: String,
+      enum: ["pendiente", "en proceso", "completado", "cancelado"],
+      default: "pendiente",
+    },
   },
   {
     collection: "solicitudes",

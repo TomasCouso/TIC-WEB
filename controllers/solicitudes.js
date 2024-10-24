@@ -60,6 +60,7 @@ const createSolicitud = async (req, res) => {
       _id: solicitudGuardada._id,
       asunto: solicitudGuardada.asunto,
       emailSolicitante: solicitudGuardada.emailSolicitante,
+      estado: solicitudGuardada.estado,
       fechaSolicitud: solicitudGuardada.createdAt,
     });
 
@@ -93,6 +94,7 @@ const updateSolicitud = async (req, res) => {
       {
         $set: {
           "solicitudes.$.asunto": solicitudActualizada.asunto,
+          "solicitudes.$.estado": solicitudActualizada.estado,
           "solicitudes.$.emailSolicitante":
             solicitudActualizada.emailSolicitante,
         },
@@ -107,7 +109,8 @@ const updateSolicitud = async (req, res) => {
     }
 
     res.status(200).json({
-      mensaje: "Solicitud actualizado exitosamente, Empleado actualizado", solicitudActualizada
+      mensaje: "Solicitud actualizado exitosamente, Empleado actualizado",
+      solicitudActualizada,
     });
   } catch (e) {
     res.status(500).json({ mensaje: e.message });
@@ -117,12 +120,27 @@ const updateSolicitud = async (req, res) => {
 const deleteSolicitud = async (req, res) => {
   try {
     const id = req.params.id;
+
     const solicitudEliminada = await Solicitud.findByIdAndDelete(id);
-    if (solicitudEliminada) {
-      res.status(200).json({ mensaje: "Solicitud eliminada" });
-    } else {
+
+    if (!solicitudEliminada) {
       res.status(404).json({ mensaje: "Solicitud no encontrada" });
     }
+
+    const empleadoSolicitudEliminada = await Empleado.updateOne(
+      { "solicitudes._id": id },
+      { $pull: { solicitudes: { _id: id } } }
+    );
+
+    if (!empleadoSolicitudEliminada) {
+      res
+        .status(404)
+        .json({ mensaje: "Solicitud eliminada, Empleado no actualizado" });
+    }
+
+    res
+      .status(200)
+      .json({ mensaje: "Solicitud eliminada, y Empleado actualizado" });
   } catch (e) {
     res.status(500).json({ mensaje: e.message });
   }

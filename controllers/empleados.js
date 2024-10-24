@@ -1,5 +1,6 @@
 const Empleado = require("../models/empleados");
 const PedidoMaterial = require("../models/pedidosMateriales");
+const Solicitud = require("../models/solicitudes");
 
 const getEmpleados = async (req, res) => {
   try {
@@ -57,6 +58,11 @@ const updateEmpleado = async (req, res) => {
         { "empleado._id": id },
         { $set: { "empleado.nombre": empleadoActualizado.nombre } }
       );
+
+      await Solicitud.updateMany(
+        { "empleado._id": id },
+        { $set: { "empleado.nombre": empleadoActualizado.nombre } }
+      );
     }
 
     if (empleadoActualizado) {
@@ -82,25 +88,47 @@ const deleteEmpleado = async (req, res) => {
       res.status(404).json({ message: "Empleado no encontrado" });
     }
 
-    const pedidoEmpeladoEliminado = await PedidoMaterial.updateMany(
-      { "empleado._id": id },
-      {
-        $set: {
-          "empleado.nombre": `${empleadoEliminado.nombre} (empleado eliminado)`,
-          estado: "cancelado",
-        },
-      }
-    );
+    if (empleadoEliminado.pedidosMateriales.length > 0) {
+      const pedidosEmpeladoEliminados = await PedidoMaterial.updateMany(
+        { "empleado._id": id },
+        {
+          $set: {
+            "empleado.nombre": `${empleadoEliminado.nombre} (empleado eliminado)`,
+            estado: "cancelado",
+          },
+        }
+      );
 
-    if (pedidoEmpeladoEliminado.modifiedCount === 0) {
-      res
-        .status(404)
-        .json({ mensaje: "Empleado no encontrado o no se realizaron cambios" });
+      if (pedidosEmpeladoEliminados.modifiedCount === 0) {
+        res.status(404).json({
+          mensaje:
+            "Empleado no encontrado o no se realizaron cambios en pedidos",
+        });
+      }
     }
 
-    res
-      .status(200)
-      .json({ message: "Empleado eliminado y pedidos actualizados" });
+    if (empleadoEliminado.solicitudes.length > 0) {
+      const solicitudesEmpleadoEliminadas = await Solicitud.updateMany(
+        { "empleado._id": id },
+        {
+          $set: {
+            "empleado.nombre": `${empleadoEliminado.nombre} (empleado eliminado)`,
+            estado: "cancelado",
+          },
+        }
+      );
+
+      if (solicitudesEmpleadoEliminadas.modifiedCount === 0) {
+        res.status(404).json({
+          mensaje:
+            "Empleado no encontrado o no se realizaron cambiosen solicitudes",
+        });
+      }
+    }
+
+    res.status(200).json({
+      message: "Empleado eliminado, pedidos y solicitudes actualizadas",
+    });
   } catch (e) {
     res.status(500).json({ mensaje: e.message });
   }
@@ -120,12 +148,14 @@ const getInfoEmpleado = async (req, res) => {
       (pedido) => pedido.estado === "pendiente"
     );
 
-    //solicitudes a nombre del empleado
+    const solicitudesPendientes = empleado.solicitudes.filter(
+      (solicitud) => solicitud.estado === "pendiente"
+    );
 
     res.status(200).json({
       empleado,
       pedidosPendientes,
-      //solicitudes,
+      solicitudesPendientes,
     });
   } catch (e) {
     res.status(500).json({ mensaje: e.message });

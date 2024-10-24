@@ -56,6 +56,7 @@ const empleadoSchema = new mongoose.Schema(
         asunto: String,
         emailSolicitante: String,
         fechaSolicitud: Date,
+        estado: String,
       },
     ],
   },

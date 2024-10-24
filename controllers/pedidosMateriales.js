@@ -115,7 +115,8 @@ const updatePedido = async (req, res) => {
     }
 
     res.status(200).json({
-      mensaje: "Pedido actualizado exitosamente, Empleado actualizado", pedidoMaterialActualizado
+      mensaje: "Pedido actualizado exitosamente, Empleado actualizado",
+      pedidoMaterialActualizado,
     });
   } catch (e) {
     res.status(500).json({ message: e.message });
@@ -134,12 +135,12 @@ const deletePedido = async (req, res) => {
       res.status(404).json({ message: "Pedido de material no encontrado" });
     }
 
-    const EmpleadoPedidoEliminado = await Empleado.updateOne(
+    const empleadoPedidoEliminado = await Empleado.updateOne(
       { "pedidosMateriales._id": id },
       { $pull: { pedidosMateriales: { _id: id } } }
     );
 
-    if (!EmpleadoPedidoEliminado) {
+    if (!empleadoPedidoEliminado) {
       res
         .status(404)
         .json({ message: "Pedido eliminado, Empleado no actualizado" });
