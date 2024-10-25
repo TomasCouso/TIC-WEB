@@ -76,6 +76,8 @@ const updateSolicitud = async (req, res) => {
   try {
     const id = req.params.id;
 
+    //cambio de categoria
+
     const solicitudActualizada = await Solicitud.findByIdAndUpdate(
       id,
       req.body,
@@ -89,7 +91,7 @@ const updateSolicitud = async (req, res) => {
       });
     }
 
-    const empleadoSolicitudActualizada = await Empleado.updateOne(
+    await Empleado.updateOne(
       { "solicitudes._id": id },
       {
         $set: {
@@ -100,13 +102,6 @@ const updateSolicitud = async (req, res) => {
         },
       }
     );
-
-    if (empleadoSolicitudActualizada.modifiedCount === 0) {
-      res.status(404).json({
-        mensaje:
-          "Solicitud no encontrada o no se realizaron cambios en Empleado",
-      });
-    }
 
     res.status(200).json({
       mensaje: "Solicitud actualizado exitosamente, Empleado actualizado",

@@ -82,6 +82,8 @@ const updatePedido = async (req, res) => {
   try {
     const id = req.params.id;
 
+    //cambio de material
+
     const pedidoMaterialActualizado = await PedidosMateriales.findByIdAndUpdate(
       id,
       req.body,
@@ -95,7 +97,7 @@ const updatePedido = async (req, res) => {
       });
     }
 
-    const empleadoPedidoActualizado = await Empleado.updateOne(
+    await Empleado.updateOne(
       { "pedidosMateriales._id": id },
       {
         $set: {
@@ -105,12 +107,6 @@ const updatePedido = async (req, res) => {
         },
       }
     );
-
-    if (empleadoPedidoActualizado.modifiedCount === 0) {
-      res.status(404).json({
-        mensaje: "Pedido no encontrado o no se realizaron cambios en Empleado",
-      });
-    }
 
     res.status(200).json({
       mensaje: "Pedido actualizado exitosamente, Empleado actualizado",
