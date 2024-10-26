@@ -1,8 +1,7 @@
 //EL CODIGO RECIBE UN ERROR, LE DA FORMATO Y DEVUELVE EL JSON
-
-const handleError = (err, req, res, next) => {
+const errorHandler = (err, req, res, next) => { 
     const statusCode = err.statusCode || 500; // EL 500 ES POR DEFECTO POR SI NO HAY NINGUN CODIGO ESPECIFICO
-    const message = err.message || "Error interno del servidor"; // AQUI VA EL MENSAJE PERSONALIZADO O UN MENSAJE GENERICO 
+    const message = err.message || "Error desconocido"; // AQUI VA EL MENSAJE PERSONALIZADO O UN MENSAJE GENERICO 
 
     res.status(statusCode).json({
         status: "ERROR",
@@ -11,8 +10,4 @@ const handleError = (err, req, res, next) => {
     });
 };
 
-module.exports = handleError;
-
-//para usarlo hay que:
-//const handleError = require("./helpers/errorHandler.js");
-//CUANDO LO NECESITAMOS: handleError(err, res); o tambien handleError(err) 
+module.exports = errorHandler;

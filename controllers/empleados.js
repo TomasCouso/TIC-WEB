@@ -4,9 +4,18 @@ const Solicitud = require("../models/solicitudes");
 
 const getEmpleados = async (req, res) => {
   try {
-    res.status(200).json(await Empleado.find());
+    const empleados = await Empleado.find();
+
+    if(!empleados){
+      const error = new Error("No se encontraron empleados"); //PERSONALIZO ERROR
+      error.statusCode = 404;
+      throw error; //SALTO AL BLOQUE CATCH
+    }
+    
+    res.status(200).json(empleados);
   } catch (e) {
-    res.status(500).json({ mensaje: e.message });
+    //res.status(500).json({ mensaje: e.message });
+    next(e); //SALTO AL ERRORHANDLER
   }
 };
 
@@ -16,7 +25,8 @@ const createEmpleado = async (req, res) => {
     const empleadoGuardado = await nuevoEmpleado.save();
     res.status(201).json(empleadoGuardado);
   } catch (e) {
-    res.status(500).json({ mensaje: e.message });
+    //res.status(500).json({ mensaje: e.message });
+    next(e); //SALTO AL ERRORHANDLER
   }
 };
 
@@ -89,7 +99,7 @@ const deleteEmpleado = async (req, res) => {
     }
 
     await PedidoMaterial.deleteMany({ "empleado._id": id });
-    
+
     await Solicitud.deleteMany({ "empleado._id": id });
 
     res.status(200).json({

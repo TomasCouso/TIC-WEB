@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const errorHandler = require("./helpers/errorHandler.js");
 
 class Server {
   constructor() {
@@ -24,6 +25,9 @@ class Server {
     //ESTABLEZCO EL PREFIJO DE RUTA (/api/empleados) QUE SERÁ MANEJADO POR MI ROUTES/EMPLEADOS.JS
     this.app.use("/api/empleados", require("./routes/empleados"));
     this.app.use("/api/home", require("./routes/home"));
+
+    //MANEJO DE ERRORES GLOBAL, AL FINAL DE LAS RUTAS
+    this.app.use(errorHandler);
   }
 
   async conectarABD() {
