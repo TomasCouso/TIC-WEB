@@ -25,8 +25,6 @@ const { login } = require("../controllers/auth");
 router.use("/materiales", require("./materiales"));
 router.use("/pedidos", require("./pedidosMateriales"));
 
-router.post("/login", login);
-
 //desde aca necesita auth
 router.get("/", getInfoEmpleado);
 

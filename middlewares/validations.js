@@ -1,52 +1,40 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 const validarJwt = async (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1];
 
-    const token = req.header('x-token');
+  if (!token) {
+    return res.status(403).json({ message: "No existe token" });
+  }
 
-    if (!token) {
-        return res.status(401).json({
-            mensaje: 'No hay token en la petición'
-        });
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: "Token inválido" });
     }
-
-    try { //jwt.verify  verifica si el token es válido
-        const data = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
-        const { nombre } = data;
-
-
-        if (req.user.nombre !== nombre) {
-            return res.status(401).json({ mensaje: 'Token no válido - usuario no existe DB' })
-        }
-
-        next();
-
-    } catch (e) {
-        console.log(e);
-        res.status(401).json({ mensaje: 'Token no válido' })
-    }
-}
+    req.user = user;
+    next();
+  });
+};
 
 //VERIFICA SI ESTA AUTENTICADO COMO ADMIN
 const validarAdmin = (req, res, next) => {
-    if (req.user.rol === "ADMIN") {
-        return next();
-    }
-    res.status(401).json({ mensaje: "Autenticación no válida" })
-
-}
+  if (req.user.rol === "ADMIN") {
+    return next();
+  }
+  res.status(401).json({ mensaje: "Autenticación no válida" });
+};
 
 //VERIFICA SI ESTA AUTENTICADO
 const validarAuth = (req, res, next) => {
-    if (req.user.rol != "ADMIN" && req.user.rol != "EMPLEADO") {
-        res.status(401).json({ mensaje: "Autenticación no válida" })
-    }
+  if (req.user.rol != "ADMIN" && req.user.rol != "EMPLEADO") {
+    res.status(401).json({ mensaje: "Autenticación no válida" });
+  }
 
-    next();
-}
+  next();
+};
 
 module.exports = {
-    validarAdmin,
-    validarJwt,
-    validarAuth,
-}
+  validarAdmin,
+  validarJwt,
+  validarAuth,
+};

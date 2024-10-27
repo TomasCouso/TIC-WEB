@@ -2,17 +2,17 @@ const express = require("express");
 
 const router = express.Router();
 
-const { login } = require("../controllers/auth");
-
 const { getIndex } = require("../controllers/home");
 
+const { validarJwt } = require("../middlewares/validations");
+
 router.use("/noticias", require("./noticias"));
+
 router.use("/instructivos", require("./instructivos"));
-router.use("/solicitudes", require("./solicitudes"));
+
+//debe iniciar sesion para acceder a esta ruta
+router.use("/solicitudes", [validarJwt], require("./solicitudes"));
 
 router.get("/", getIndex);
-
-//Seria login para poder hacer solicitudes
-router.get("/login", login);
 
 module.exports = router;
