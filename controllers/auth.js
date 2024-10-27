@@ -57,6 +57,7 @@ const loginCallback = async (req, res) => {
       mensaje: "Inicio de sesión exitoso",
       token: appToken,
     });
+    
   } catch (error) {
     console.error(
       "Error en el proceso de autenticación:",

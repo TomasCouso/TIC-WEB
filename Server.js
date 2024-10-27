@@ -25,15 +25,13 @@ class Server {
     //ESTABLEZCO EL PREFIJO DE RUTA (/api/empleados) QUE SERÁ MANEJADO POR MI ROUTES/EMPLEADOS.JS
     this.app.use("/api/empleados", require("./routes/empleados"));
     this.app.use("/api/home", require("./routes/home"));
-
+    this.app.use("/api/auth", require("./routes/auth"));
     //MANEJO DE ERRORES GLOBAL, AL FINAL DE LAS RUTAS
     this.app.use(errorHandler);
-    this.app.use("/api/auth", require("./routes/auth"));
   }
 
   async conectarABD() {
     //CONEXION A LA BD CON MONGOOSE
-
     try {
       //INTENTO CONECTARME A LA BD
       await mongoose.connect(process.env.MONGODB_URI); //DEBEN SER ASINCRONOS

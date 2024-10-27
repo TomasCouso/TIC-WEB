@@ -29,7 +29,6 @@ const validarAuth = (req, res, next) => {
   if (req.user.rol != "ADMIN" && req.user.rol != "EMPLEADO") {
     res.status(401).json({ mensaje: "Autenticación no válida" });
   }
-
   next();
 };
 
