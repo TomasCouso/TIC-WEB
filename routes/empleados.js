@@ -42,3 +42,5 @@ router.put("/:id", validarJwt, validarAuth, validarAdmin, updateEmpleado);
 router.delete("/:id", validarJwt, validarAuth, validarAdmin, deleteEmpleado);
 
 module.exports = router;
+//desde aca para el mundo
+//Puto el que lee gg go next
