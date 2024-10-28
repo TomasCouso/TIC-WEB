@@ -1,3 +1,4 @@
+
 const Solicitud = require("../models/solicitudes");
 const Empleado = require("../models/empleados");
 const Categoria = require("../models/categorias");
@@ -6,7 +7,7 @@ const getSolicitudes = async (req, res) => {
   try {
     res.status(200).json(await Solicitud.find());
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    next(e);
   }
 };
 
@@ -14,16 +15,16 @@ const getSolicitud = async (req, res) => {
   try {
     const id = req.params.id;
     const solicitud = await Solicitud.findById(id);
-    if (solicitud) {
-      res.status(200).json(solicitud);
-    } else {
-      res.status(404).json({
-        id,
-        encontrado: false,
-      });
+
+    if (!solicitud) {
+      const error = new Error("No se encontro la solicitud");
+      error.statusCode = 404;
+      throw error;
     }
+
+    res.status(200).json(solicitud);
   } catch (e) {
-    res.status(500).json({ mensaje: e.message });
+    next(e);
   }
 };
 
@@ -33,13 +34,18 @@ const createSolicitud = async (req, res) => {
 
     const empleado = await Empleado.findById(empleadoId);
     if (!empleado) {
-      res.status(404).json({ mensaje: "Empleado no encontrado" });
+      const error = new Error("No se encontro el empleado");
+      error.statusCode = 404;
+      throw error;
     }
 
     const categoriaId = await Categoria.findById(req.body.categoriaID);
     const categoria = await Categoria.findById(categoriaId);
+
     if (!categoria) {
-      res.status(404).json({ mensaje: "Categoria no encontrada" });
+      const error = new Error("No se encontro la categoria");
+      error.statusCode = 404;
+      throw error;
     }
 
     const nuevaSolicitud = new Solicitud({
@@ -68,7 +74,7 @@ const createSolicitud = async (req, res) => {
 
     res.status(201).json(solicitudGuardada);
   } catch (e) {
-    res.status(500).json({ mensaje: e.message });
+    next(e);
   }
 };
 
@@ -85,10 +91,9 @@ const updateSolicitud = async (req, res) => {
     );
 
     if (!solicitudActualizada) {
-      res.status(404).json({
-        id,
-        actualizado: false,
-      });
+      const error = new Error("No se encontro la solicitud");
+      error.statusCode = 404;
+      throw error;
     }
 
     await Empleado.updateOne(
@@ -108,18 +113,19 @@ const updateSolicitud = async (req, res) => {
       solicitudActualizada,
     });
   } catch (e) {
-    res.status(500).json({ mensaje: e.message });
+    next(e);
   }
 };
 
 const deleteSolicitud = async (req, res) => {
   try {
     const id = req.params.id;
-
     const solicitudEliminada = await Solicitud.findByIdAndDelete(id);
 
     if (!solicitudEliminada) {
-      res.status(404).json({ mensaje: "Solicitud no encontrada" });
+      const error = new Error("No se encontro la solicitud");
+      error.statusCode = 404;
+      throw error;
     }
 
     const empleadoSolicitudEliminada = await Empleado.updateOne(
@@ -128,16 +134,16 @@ const deleteSolicitud = async (req, res) => {
     );
 
     if (!empleadoSolicitudEliminada) {
-      res
-        .status(404)
-        .json({ mensaje: "Solicitud eliminada, Empleado no actualizado" });
+      const error = new Error("Solicitud eliminada, Empleado no actualizado");
+      error.statusCode = 404;
+      throw error;
     }
 
-    res
+    ress
       .status(200)
       .json({ mensaje: "Solicitud eliminada, y Empleado actualizado" });
   } catch (e) {
-    res.status(500).json({ mensaje: e.message });
+    next(e);
   }
 };
 

@@ -2,11 +2,17 @@ const Noticia = require("../models/noticias");
 
 const getNoticias = async (req, res) => {
   try {
-    res.status(200).json(await Noticia.find());
+    const noticias = await Noticia.find();
+
+    if (!noticias) {
+      const error = new Error("No se encontraron noticias");
+      error.statusCode = 404;
+      throw error;
+    }
+    
+    res.status(200).json(noticias);
   } catch (e) {
-    res.status(500).json({
-      mensaje: e,
-    });
+    next(e);
   }
 };
 
@@ -14,18 +20,16 @@ const getNoticia = async (req, res) => {
   try {
     const id = req.params.id;
     const noticia = await Noticia.findById(id);
-    if (noticia) {
-      res.status(200).json(noticia);
-    } else {
-      res.status(404).json({
-        id,
-        encontrado: false,
-      });
-    }
+
+    if (!noticia) {
+      const error = new Error("No se encontro la noticia");
+      error.statusCode = 404;
+      throw error;
+    } 
+
+    res.status(200).json(noticia);
   } catch (e) {
-    res.status(500).json({
-      mensaje: e,
-    });
+    next(e);
   }
 };
 
@@ -33,11 +37,12 @@ const createNoticia = async (req, res) => {
   try {
     const nuevaNoticia = new Noticia(req.body);
     const noticiaGuardada = await nuevaNoticia.save();
+
     res.status(201).json(noticiaGuardada);
   } catch (e) {
-    res.status(500).json({
-      mensaje: e,
-    });
+    const error = new Error("Hubo un error al crear la noticia");
+    error.statusCode = 404;
+    next(e);
   }
 };
 
@@ -47,16 +52,16 @@ const updateNoticia = async (req, res) => {
     const noticiaActualizada = await Noticia.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-    if (noticiaActualizada) {
-      res.status(200).json(noticiaActualizada);
-    } else {
-      res.status(404).json({
-        id,
-        actualizado: false,
-      });
-    }
+
+    if (!noticiaActualizada) {
+      const error = new Error("Hubo un error al actualizar la noticia");
+      error.statusCode = 404;
+      throw error;
+    } 
+  
+    res.status(200).json(noticiaActualizada);
   } catch (e) {
-    res.status(500).json({ mensaje: e });
+    next(e);
   }
 };
 
@@ -64,13 +69,16 @@ const deleteNoticia = async (req, res) => {
   try {
     const id = req.params.id;
     const noticiaEliminada = await Noticia.findByIdAndDelete(id);
-    if (noticiaEliminada) {
-      res.status(200).json({ mensaje: "Noticia eliminada" });
-    } else {
-      res.status(404).json({ mensaje: "Noticia no encontrada" });
+
+    if (!noticiaEliminada) {
+      const error = new Error("No se encontro la noticia a eliminar");
+      error.statusCode = 404;
+      throw error;
     }
+
+    res.status(200).json({ mensaje: "Noticia eliminada" });
   } catch (e) {
-    res.status(500).json({ mensaje: e });
+    next(e);
   }
 };
 

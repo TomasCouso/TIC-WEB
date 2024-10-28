@@ -3,11 +3,17 @@ const PedidoMaterial = require("../models/pedidosMateriales");
 
 const getMateriales = async (req, res) => {
   try {
-    res.status(200).json(await Material.find());
+    const materiales = await Material.find();
+
+    if (!materiales) {
+      const error = new Error("No se encontraron materiales");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json(materiales);
   } catch (e) {
-    res.status(500).json({
-      mensaje: e,
-    });
+    next(e);
   }
 };
 
@@ -17,28 +23,29 @@ const createMaterial = async (req, res) => {
     const materialGuardado = await nuevoMaterial.save();
     res.status(201).json(materialGuardado);
   } catch (e) {
-    res.status(500).json({
-      mensaje: e,
-    });
+    next(e);
   }
 };
 
 const getMaterial = async (req, res) => {
   try {
     let id = req.params.id;
-    const mat = await Material.findById(id);
-    if (mat) {
-      res.status(200).json(mat);
-    } else {
+    const material = await Material.findById(id);
+
+    if (!material) {
+      const error = new Error("No se encontraron materiales");
+      error.statusCode = 404;
+      throw error;
+    }
+    /*else {
       res.status(404).json({
         id,
         encontrado: false,
       });
-    }
+    }*/
+    res.status(200).json(material);
   } catch (e) {
-    res.status(500).json({
-      mensaje: e,
-    });
+    next(e);
   }
 };
 
@@ -46,26 +53,32 @@ const updateMaterial = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const matActualizado = await Material.findByIdAndUpdate(id, req.body, {
+    const materialParaActualizar  = await Material.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
     });
 
-    if (!matActualizado) {
+    if (!materialParaActualizar) { //CAMBIE EL NOMBRE DE LA VARIABLE PARA QUE SEA MAS DESCRIPTIVA
+      const error = new Error("No se encontraron materiales");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    /*
       res.status(404).json({
         id,
         actualizado: false,
       });
-    }
+    */
 
     await PedidoMaterial.updateMany(
       { "materiales._id": id },
-      { $set: { "materiales.$.nombre": matActualizado.nombre } }
+      { $set: { "materiales.$.nombre": materialParaActualizar.nombre } }
     );
 
-    res.status(200).json(matActualizado);
+    res.status(200).json(materialParaActualizar);
   } catch (e) {
-    res.status(500).json({ message: e.message });
+    next(e);
   }
 };
 
@@ -73,17 +86,19 @@ const deleteMaterial = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const matEliminado = await Material.findByIdAndDelete(id);
+    const materialParaEliminar = await Material.findByIdAndDelete(id);
 
-    if (!matEliminado) {
-      res.status(404).json({ message: "Material no encontrado" });
+    if (!materialParaEliminar) {
+      const error = new Error("No se encontraron materiales");
+      error.statusCode = 404;
+      throw error;
     }
 
     const pedidoMaterialActualizado = await PedidoMaterial.updateMany(
       { "materiales._id": id },
       {
         $set: {
-          "materiales.$.nombre": `${matEliminado.nombre} (material eliminado)`,
+          "materiales.$.nombre": `${materialParaEliminar.nombre} (material eliminado)`,
           estado: "cancelado",
         },
       }
@@ -94,7 +109,7 @@ const deleteMaterial = async (req, res) => {
       pedidoMaterialActualizado,
     });
   } catch (e) {
-    res.status(500).json({ message: e.message });
+    next(e);
   }
 };
 

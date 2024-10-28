@@ -63,6 +63,7 @@ const loginCallback = async (req, res) => {
       "Error en el proceso de autenticación:",
       error.response?.data || error.message
     );
+    
     res.status(500).json({
       message: "Authentication failed",
       error: error.response?.data || error.message,

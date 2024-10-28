@@ -6,7 +6,7 @@ const getCategorias = async (req, res) => {
   try {
     res.status(200).json(await Categoria.find());
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    next(e);
   }
 };
 
@@ -14,7 +14,7 @@ const getCategoria = async (req, res) => {
   try {
     res.status(200).json(await Categoria.findById(req.params.id));
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    next(e);
   }
 };
 
@@ -23,8 +23,9 @@ const createCategoria = async (req, res) => {
     const nuevaCategoria = new Categoria(req.body);
     const categoriaGuardada = await nuevaCategoria.save();
     res.status(201).json(categoriaGuardada);
+
   } catch (e) {
-    res.status(500).json({ mensaje: e.message });
+    next(e);
   }
 };
 
@@ -68,7 +69,7 @@ const updateCategoria = async (req, res) => {
       categoriaActualizada,
     });
   } catch (e) {
-    res.status(500).json({ mensaje: e.message });
+    next(e);
   }
 };
 
@@ -79,7 +80,9 @@ const deleteCategoria = async (req, res) => {
     const categoriaEliminada = await Categoria.findByIdAndDelete(id);
 
     if (!categoriaEliminada) {
-      res.status(404).json({ mensaje: "Categoria no encontrada" });
+      const error = new Error("Categoria no encontrada");
+      error.status = 404;
+      throw error;
     }
 
     await Solicitud.updateMany(
@@ -106,7 +109,7 @@ const deleteCategoria = async (req, res) => {
       categoriaEliminada,
     });
   } catch (e) {
-    res.status(500).json({ mensaje: e.message });
+    next(e);
   }
 };
 

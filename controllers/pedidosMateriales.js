@@ -6,7 +6,9 @@ const getPedidos = async (req, res) => {
   try {
     res.status(200).json(await PedidosMateriales.find());
   } catch (e) {
-    res.status(500).json({ mensaje: e.menssage });
+    const error = new Error("Hubo un error al obtener los pedidos de materiales");
+    error.statusCode = 404;
+    next(e);
   }
 };
 
@@ -16,7 +18,9 @@ const createPedido = async (req, res) => {
 
     const empleado = await Empleado.findById(empleadoId);
     if (!empleado) {
-      res.status(404).json({ mensaje: "Empleado no encontrado" });
+      const error = new Error("No se encontro el empleado");
+      error.statusCode = 404;
+      throw error;
     }
 
     const materialesValidos = await Promise.all(
@@ -57,7 +61,7 @@ const createPedido = async (req, res) => {
 
     res.status(201).json(pedidoMaterialGuardado);
   } catch (e) {
-    res.status(500).json({ mensaje: e.message });
+    next(e);
   }
 };
 
@@ -65,16 +69,16 @@ const getPedido = async (req, res) => {
   try {
     const id = req.params.id;
     const pedidoMaterial = await PedidosMateriales.findById(id);
-    if (pedidoMaterial) {
-      res.status(200).json(pedidoMaterial);
-    } else {
-      res.status(404).json({
-        id,
-        encontrado: false,
-      });
-    }
+
+    if (!pedidoMaterial) {
+      const error = new Error("No se encontro el pedido de materiales");
+      error.statusCode = 404;
+      throw error;
+    } 
+    
+    res.status(200).json(pedidoMaterial);
   } catch (e) {
-    res.status(500).json({ mensaje: e.message });
+    next(e);
   }
 };
 
@@ -91,10 +95,14 @@ const updatePedido = async (req, res) => {
     );
 
     if (!pedidoMaterialActualizado) {
-      res.status(404).json({
+      const error = new Error("No se encontro el pedido de materiales");
+      error.statusCode = 404;
+      throw error;
+
+      /*res.status(404).json({
         id,
         actualizado: false,
-      });
+      });*/
     }
 
     await Empleado.updateOne(
@@ -113,7 +121,7 @@ const updatePedido = async (req, res) => {
       pedidoMaterialActualizado,
     });
   } catch (e) {
-    res.status(500).json({ message: e.message });
+    next(e);
   }
 };
 
@@ -126,7 +134,9 @@ const deletePedido = async (req, res) => {
     );
 
     if (!pedidoMaterialEliminado) {
-      res.status(404).json({ message: "Pedido de material no encontrado" });
+      const error = new Error("No se encontro el pedido de materiales");
+      error.statusCode = 404;
+      throw error;
     }
 
     const empleadoPedidoEliminado = await Empleado.updateOne(
@@ -135,16 +145,16 @@ const deletePedido = async (req, res) => {
     );
 
     if (!empleadoPedidoEliminado) {
-      res
-        .status(404)
-        .json({ message: "Pedido eliminado, Empleado no actualizado" });
+      const error = new Error("Pedido eliminado, Empleado no actualizado");
+      error.statusCode = 404;
+      throw error;
     }
 
     res
       .status(200)
       .json({ message: "Pedido eliminado, y empleado actualizado" });
   } catch (e) {
-    res.status(500).json({ message: e.message });
+    next(e);
   }
 };
 

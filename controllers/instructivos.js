@@ -12,7 +12,7 @@ const getInstructivos = async (req, res) => {
 
     return res.status(200).json(instructivos);
   } catch (e) {
-    res.status(500).json({ mensaje: e.message });
+    next(e);
   }
 };
 
@@ -23,13 +23,13 @@ const getInstructivo = async (req, res) => {
     if (instructivo) {
       res.status(200).json(instructivo);
     } else {
-      res.status(404).json({
-        id,
-        encontrado: false,
-      });
+      const error = new Error("No se encontro el instructivo");
+      error.statusCode = 404;
+      throw error;
+      //res.status(404).json({ id, encontrado: false, });
     }
   } catch (e) {
-    res.status(500).json({ mensaje: e.message });
+    next(e);
   }
 };
 
@@ -39,7 +39,7 @@ const createInstructivo = async (req, res) => {
     const instructivoGuardado = await nuevoInstructivo.save();
     res.status(201).json(instructivoGuardado);
   } catch (e) {
-    res.status(500).json({ mensaje: e.message });
+    next(e);
   }
 };
 
@@ -48,22 +48,27 @@ const updateInstructivo = async (req, res) => {
     const id = req.params.id;
     const instructivoActualizado = await Instructivo.findByIdAndUpdate(
       id,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
+      req.body, {
+      new: true, runValidators: true,
+    }
     );
-    if (instructivoActualizado) {
-      res.status(200).json(instructivoActualizado);
-    } else {
+
+    if (!instructivoActualizado) {
+      const error = new Error("No se encontro el instructivo");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json(instructivoActualizado);
+    /*else {
       res.status(404).json({
         id,
         actualizado: false,
       });
     }
+  */
   } catch (e) {
-    res.status(500).json({ mensaje: e.message });
+    next(e);
   }
 };
 
@@ -71,13 +76,16 @@ const deleteInstructivo = async (req, res) => {
   try {
     const id = req.params.id;
     const instructivoEliminado = await Instructivo.findByIdAndDelete(id);
+    
     if (instructivoEliminado) {
       res.status(200).json({ mensaje: "Instructivo eliminado" });
     } else {
-      res.status(404).json({ mensaje: "Instructivo no encontrado" });
+      const error = new Error("No se encontro el instructivo");
+      error.statusCode = 404;
+      throw error;
     }
   } catch (e) {
-    res.status(500).json({ mensaje: e.message });
+    next(e);
   }
 };
 

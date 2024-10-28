@@ -27,7 +27,7 @@ const getIndex = async (req, res) => {
       datos,
     });
   } catch (e) {
-    res.status(500).json({ mensaje: e });
+    next(e);
   }
 };
 
