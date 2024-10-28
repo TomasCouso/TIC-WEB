@@ -1,6 +1,8 @@
 const express = require("express");
-
 const router = express.Router();
+
+//IMPORTO MIDDLEWARES
+const { validarAdmin, validarJwt, validarAuth } = require("../middlewares/validations");
 
 const {
   getEmpleados,
@@ -26,17 +28,17 @@ router.use("/materiales", require("./materiales"));
 router.use("/pedidos", require("./pedidosMateriales"));
 
 //desde aca necesita auth
-router.get("/", getInfoEmpleado);
+router.get("/", validarJwt, validarAuth, getInfoEmpleado);
 
 //desde aca para admin
-router.get("/listar", getEmpleados);
+router.get("/listar", validarJwt, validarAuth, validarAdmin, getEmpleados);
 
-router.get("/:id", getEmpleado);
+router.get("/:id", validarJwt, validarAuth, validarAdmin, getEmpleado);
 
-router.post("/", createEmpleado);
+router.post("/", validarJwt, validarAuth, validarAdmin, createEmpleado);
 
-router.put("/:id", updateEmpleado);
+router.put("/:id", validarJwt, validarAuth, validarAdmin, updateEmpleado);
 
-router.delete("/:id", deleteEmpleado);
+router.delete("/:id", validarJwt, validarAuth, validarAdmin, deleteEmpleado);
 
 module.exports = router;

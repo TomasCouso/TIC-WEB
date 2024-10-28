@@ -1,6 +1,7 @@
 const express = require("express");
-
 const router = express.Router();
+
+const { validarAdmin, validarJwt, validarAuth } = require("../middlewares/validations");
 
 const {
   getSolicitudes,
@@ -10,18 +11,18 @@ const {
   deleteSolicitud,
 } = require("../controllers/solicitudes");
 
-router.get("/", getSolicitudes);
+router.get("/", validarJwt, validarAuth, getSolicitudes);
 
 //verificar si del usuario
-router.get("/:id", getSolicitud);
+router.get("/:id", validarJwt, validarAuth, getSolicitud);
 
 //esta autorizada
 router.post("/", createSolicitud);
 
 //esta autorizada y empleado o admin
-router.put("/:id", updateSolicitud);
+router.put("/:id", validarJwt, validarAuth, validarAdmin, updateSolicitud);
 
 //esta autorizada y admin
-router.delete("/:id", deleteSolicitud);
+router.delete("/:id", validarJwt, validarAuth, validarAdmin, deleteSolicitud);
 
 module.exports = router;
