@@ -4,12 +4,20 @@ const validarJwt = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    return res.status(403).json({ message: "No existe token" });
+    const error = new Error("No existe token");
+    error.statusCode = 403;
+    return next(error);
+
+    //return res.status(403).json({ message: "No existe token" });
   }
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
-      return res.status(403).json({ message: "Token inválido" });
+      const error = new Error("Token inválido");
+      error.statusCode = 403;
+      return next(error);
+
+      //return res.status(403).json({ message: "Token inválido" });
     }
     req.user = user;
     next();
@@ -18,16 +26,25 @@ const validarJwt = async (req, res, next) => {
 
 //VERIFICA SI ESTA AUTENTICADO COMO ADMIN
 const validarAdmin = (req, res, next) => {
-  if (req.user.rol === "ADMIN") {
-    return next();
+  if (req.user.rol !== "ADMIN") {
+    const error = new Error("Autenticación no válida");
+    error.statusCode = 401;
+    return next(error);
+
+    //res.status(401).json({ mensaje: "Autenticación no válida" });
   }
-  res.status(401).json({ mensaje: "Autenticación no válida" });
+  return next();
+
 };
 
 //VERIFICA SI ESTA AUTENTICADO
 const validarAuth = (req, res, next) => {
   if (req.user.rol != "ADMIN" && req.user.rol != "EMPLEADO") {
-    res.status(401).json({ mensaje: "Autenticación no válida" });
+    const error = new Error("Autenticación no válida");
+    error.statusCode = 401;
+    return next(error);
+
+    //res.status(401).json({ mensaje: "Autenticación no válida" });
   }
   next();
 };

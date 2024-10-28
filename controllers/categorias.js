@@ -2,7 +2,7 @@ const Categoria = require("../models/categorias");
 const Solicitud = require("../models/solicitudes");
 const Instructivo = require("../models/instructivos");
 
-const getCategorias = async (req, res) => {
+const getCategorias = async (req, res, next) => {
   try {
     res.status(200).json(await Categoria.find());
   } catch (e) {
@@ -10,7 +10,7 @@ const getCategorias = async (req, res) => {
   }
 };
 
-const getCategoria = async (req, res) => {
+const getCategoria = async (req, res, next) => {
   try {
     res.status(200).json(await Categoria.findById(req.params.id));
   } catch (e) {
@@ -18,7 +18,7 @@ const getCategoria = async (req, res) => {
   }
 };
 
-const createCategoria = async (req, res) => {
+const createCategoria = async (req, res, next) => {
   try {
     const nuevaCategoria = new Categoria(req.body);
     const categoriaGuardada = await nuevaCategoria.save();
@@ -29,7 +29,7 @@ const createCategoria = async (req, res) => {
   }
 };
 
-const updateCategoria = async (req, res) => {
+const updateCategoria = async (req, res, next) => {
   try {
     const id = req.params.id;
 
@@ -40,10 +40,14 @@ const updateCategoria = async (req, res) => {
     );
 
     if (!categoriaActualizada) {
-      res.status(404).json({
+      const error = new Error("No se encontro la categoria");
+      error.statusCode = 404;
+      throw error;
+
+      /*res.status(404).json({
         id,
         actualizado: false,
-      });
+      });*/
     }
 
     await Solicitud.updateMany(
@@ -73,7 +77,7 @@ const updateCategoria = async (req, res) => {
   }
 };
 
-const deleteCategoria = async (req, res) => {
+const deleteCategoria = async (req, res, next) => {
   try {
     const id = req.params.id;
 

@@ -2,9 +2,9 @@ const express = require("express");
 
 const router = express.Router();
 
-const { loginMicosft, loginCallback } = require("../controllers/auth");
+const { loginMicrosoft, loginCallback } = require("../controllers/auth");
 
-router.get("/microsoft", loginMicosft);
+router.get("/microsoft", loginMicrosoft);
 
 router.get("/microsoft/callback", loginCallback);
 

@@ -2,7 +2,7 @@ const Empleado = require("../models/empleados");
 const PedidoMaterial = require("../models/pedidosMateriales");
 const Solicitud = require("../models/solicitudes");
 
-const getEmpleados = async (req, res) => {
+const getEmpleados = async (req, res, next) => {
   try {
     const empleados = await Empleado.find();
 
@@ -19,7 +19,7 @@ const getEmpleados = async (req, res) => {
   }
 };
 
-const createEmpleado = async (req, res) => {
+const createEmpleado = async (req, res, next) => {
   try {
     const nuevoEmpleado = new Empleado(req.body);
     const empleadoGuardado = await nuevoEmpleado.save();
@@ -37,7 +37,7 @@ const createEmpleado = async (req, res) => {
   }
 };
 
-const getEmpleado = async (req, res) => {
+const getEmpleado = async (req, res, next) => {
   try {
     let id = req.params.id;
     const empleado = await Empleado.findById(id);
@@ -58,7 +58,7 @@ const getEmpleado = async (req, res) => {
   }
 };
 
-const updateEmpleado = async (req, res) => {
+const updateEmpleado = async (req, res, next) => {
   try {
     const id = req.params.id;
 
@@ -103,7 +103,7 @@ const updateEmpleado = async (req, res) => {
   }
 };
 
-const deleteEmpleado = async (req, res) => {
+const deleteEmpleado = async (req, res, next) => {
   try {
     const id = req.params.id;
     const empleadoEliminado = await Empleado.findByIdAndDelete(id);
@@ -126,7 +126,7 @@ const deleteEmpleado = async (req, res) => {
   }
 };
 
-const getInfoEmpleado = async (req, res) => {
+const getInfoEmpleado = async (req, res, next) => {
   try {
     //el middleware tiene que poner al empeado en el user
     const empleadoId = req.user.id;

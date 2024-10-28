@@ -2,7 +2,7 @@ const Noticia = require("../models/noticias");
 const Instructivo = require("../models/instructivos");
 const Empleado = require("../models/empleados");
 
-const getIndex = async (req, res) => {
+const getIndex = async (req, res, next) => {
   try {
     const noticias = await Noticia.find().limit(3);
     const instructivos = await Instructivo.find().limit(3);

@@ -3,7 +3,7 @@ const Solicitud = require("../models/solicitudes");
 const Empleado = require("../models/empleados");
 const Categoria = require("../models/categorias");
 
-const getSolicitudes = async (req, res) => {
+const getSolicitudes = async (req, res, next) => {
   try {
     res.status(200).json(await Solicitud.find());
   } catch (e) {
@@ -11,7 +11,7 @@ const getSolicitudes = async (req, res) => {
   }
 };
 
-const getSolicitud = async (req, res) => {
+const getSolicitud = async (req, res, next) => {
   try {
     const id = req.params.id;
     const solicitud = await Solicitud.findById(id);
@@ -28,7 +28,7 @@ const getSolicitud = async (req, res) => {
   }
 };
 
-const createSolicitud = async (req, res) => {
+const createSolicitud = async (req, res, next) => {
   try {
     const empleadoId = await Empleado.findById(req.body.empleadoID);
 
@@ -78,7 +78,7 @@ const createSolicitud = async (req, res) => {
   }
 };
 
-const updateSolicitud = async (req, res) => {
+const updateSolicitud = async (req, res, next) => {
   try {
     const id = req.params.id;
 
@@ -117,7 +117,7 @@ const updateSolicitud = async (req, res) => {
   }
 };
 
-const deleteSolicitud = async (req, res) => {
+const deleteSolicitud = async (req, res, next) => {
   try {
     const id = req.params.id;
     const solicitudEliminada = await Solicitud.findByIdAndDelete(id);
@@ -139,7 +139,7 @@ const deleteSolicitud = async (req, res) => {
       throw error;
     }
 
-    ress
+    res
       .status(200)
       .json({ mensaje: "Solicitud eliminada, y Empleado actualizado" });
   } catch (e) {

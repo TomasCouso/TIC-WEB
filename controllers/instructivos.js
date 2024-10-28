@@ -1,6 +1,6 @@
 const Instructivo = require("../models/instructivos");
 
-const getInstructivos = async (req, res) => {
+const getInstructivos = async (req, res, next) => {
   let instructivos; //CREO UNA VARIABLE PARA GUARDAR LOS INSTRUCTIVOS PARA QUE SI NECESITAMOS CAMBIAR ALGO SEA MAS FACIL DESPUES
 
   try {
@@ -16,7 +16,7 @@ const getInstructivos = async (req, res) => {
   }
 };
 
-const getInstructivo = async (req, res) => {
+const getInstructivo = async (req, res, next) => {
   try {
     const id = req.params.id;
     const instructivo = await Instructivo.findById(id);
@@ -33,7 +33,7 @@ const getInstructivo = async (req, res) => {
   }
 };
 
-const createInstructivo = async (req, res) => {
+const createInstructivo = async (req, res, next) => {
   try {
     const nuevoInstructivo = new Instructivo(req.body);
     const instructivoGuardado = await nuevoInstructivo.save();
@@ -43,7 +43,7 @@ const createInstructivo = async (req, res) => {
   }
 };
 
-const updateInstructivo = async (req, res) => {
+const updateInstructivo = async (req, res, next) => {
   try {
     const id = req.params.id;
     const instructivoActualizado = await Instructivo.findByIdAndUpdate(
@@ -72,7 +72,7 @@ const updateInstructivo = async (req, res) => {
   }
 };
 
-const deleteInstructivo = async (req, res) => {
+const deleteInstructivo = async (req, res, next) => {
   try {
     const id = req.params.id;
     const instructivoEliminado = await Instructivo.findByIdAndDelete(id);

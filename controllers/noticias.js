@@ -1,6 +1,6 @@
 const Noticia = require("../models/noticias");
 
-const getNoticias = async (req, res) => {
+const getNoticias = async (req, res, next) => {
   try {
     const noticias = await Noticia.find();
 
@@ -16,7 +16,7 @@ const getNoticias = async (req, res) => {
   }
 };
 
-const getNoticia = async (req, res) => {
+const getNoticia = async (req, res, next) => {
   try {
     const id = req.params.id;
     const noticia = await Noticia.findById(id);
@@ -33,7 +33,7 @@ const getNoticia = async (req, res) => {
   }
 };
 
-const createNoticia = async (req, res) => {
+const createNoticia = async (req, res, next) => {
   try {
     const nuevaNoticia = new Noticia(req.body);
     const noticiaGuardada = await nuevaNoticia.save();
@@ -46,7 +46,7 @@ const createNoticia = async (req, res) => {
   }
 };
 
-const updateNoticia = async (req, res) => {
+const updateNoticia = async (req, res, next) => {
   try {
     const id = req.params.id;
     const noticiaActualizada = await Noticia.findByIdAndUpdate(id, req.body, {
@@ -65,7 +65,7 @@ const updateNoticia = async (req, res) => {
   }
 };
 
-const deleteNoticia = async (req, res) => {
+const deleteNoticia = async (req, res, next) => {
   try {
     const id = req.params.id;
     const noticiaEliminada = await Noticia.findByIdAndDelete(id);

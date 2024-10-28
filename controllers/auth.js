@@ -1,17 +1,22 @@
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
 
-const loginMicosft = (req, res) => {
+const loginMicrosoft = (req, res) => {
   res.redirect(getUrlLogin());
 };
 
-const loginCallback = async (req, res) => {
+const loginCallback = async (req, res, next) => {
   const { code } = req.query;
 
   if (!code) {
-    return res
+    const error = new Error("No se encontro el codigo de autorización");
+    error.statusCode = 400;
+    return next(error); // SALTA AL ERROR HANDLER
+
+    /*return res
       .status(400)
       .json({ message: "No se encontro el codigo de autorización" });
+    */
   }
 
   const params = new URLSearchParams();
@@ -45,7 +50,9 @@ const loginCallback = async (req, res) => {
       !email.endsWith("@alu.inspt.utn.edu.ar") &&
       !email.endsWith("@inspt.utn.edu.ar")
     ) {
-      return res.status(403).json({ message: "Acceso denegado" });
+      const error = new Error("Acceso denegado");
+      error.statusCode = 403;
+      throw error;
     }
 
     // crear el token de acceso con email de usuario
@@ -57,17 +64,22 @@ const loginCallback = async (req, res) => {
       mensaje: "Inicio de sesión exitoso",
       token: appToken,
     });
-    
+
   } catch (error) {
+
+
     console.error(
       "Error en el proceso de autenticación:",
       error.response?.data || error.message
     );
-    
-    res.status(500).json({
-      message: "Authentication failed",
-      error: error.response?.data || error.message,
-    });
+
+    next(error);
+
+    /*
+        res.status(500).json({
+          message: "Authentication failed",
+          error: error.response?.data || error.message,
+        });*/
   }
 };
 
@@ -79,4 +91,7 @@ function getUrlLogin() {
   return `https://login.microsoftonline.com/${client_tenant}/oauth2/v2.0/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=openid%20profile%20email%20User.Read`;
 }
 
-module.exports = { loginMicosft, loginCallback };
+module.exports = {
+  loginMicrosoft,
+  loginCallback
+};

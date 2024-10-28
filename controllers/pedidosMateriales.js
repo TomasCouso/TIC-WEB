@@ -2,7 +2,7 @@ const PedidosMateriales = require("../models/pedidosMateriales");
 const Empleado = require("../models/empleados");
 const Material = require("../models/materiales");
 
-const getPedidos = async (req, res) => {
+const getPedidos = async (req, res, next) => {
   try {
     res.status(200).json(await PedidosMateriales.find());
   } catch (e) {
@@ -12,7 +12,7 @@ const getPedidos = async (req, res) => {
   }
 };
 
-const createPedido = async (req, res) => {
+const createPedido = async (req, res, next) => {
   try {
     const empleadoId = await Empleado.findById(req.body.empleadoId);
 
@@ -65,7 +65,7 @@ const createPedido = async (req, res) => {
   }
 };
 
-const getPedido = async (req, res) => {
+const getPedido = async (req, res, next) => {
   try {
     const id = req.params.id;
     const pedidoMaterial = await PedidosMateriales.findById(id);
@@ -82,7 +82,7 @@ const getPedido = async (req, res) => {
   }
 };
 
-const updatePedido = async (req, res) => {
+const updatePedido = async (req, res, next) => {
   try {
     const id = req.params.id;
 
@@ -125,7 +125,7 @@ const updatePedido = async (req, res) => {
   }
 };
 
-const deletePedido = async (req, res) => {
+const deletePedido = async (req, res, next) => {
   try {
     const id = req.params.id;
 

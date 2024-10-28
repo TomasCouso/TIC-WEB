@@ -1,7 +1,7 @@
 const Material = require("../models/materiales");
 const PedidoMaterial = require("../models/pedidosMateriales");
 
-const getMateriales = async (req, res) => {
+const getMateriales = async (req, res, next) => {
   try {
     const materiales = await Material.find();
 
@@ -17,7 +17,7 @@ const getMateriales = async (req, res) => {
   }
 };
 
-const createMaterial = async (req, res) => {
+const createMaterial = async (req, res, next) => {
   try {
     const nuevoMaterial = new Material(req.body);
     const materialGuardado = await nuevoMaterial.save();
@@ -27,7 +27,7 @@ const createMaterial = async (req, res) => {
   }
 };
 
-const getMaterial = async (req, res) => {
+const getMaterial = async (req, res, next) => {
   try {
     let id = req.params.id;
     const material = await Material.findById(id);
@@ -49,7 +49,7 @@ const getMaterial = async (req, res) => {
   }
 };
 
-const updateMaterial = async (req, res) => {
+const updateMaterial = async (req, res, next) => {
   try {
     const id = req.params.id;
 
@@ -82,7 +82,7 @@ const updateMaterial = async (req, res) => {
   }
 };
 
-const deleteMaterial = async (req, res) => {
+const deleteMaterial = async (req, res, next) => {
   try {
     const id = req.params.id;
 
