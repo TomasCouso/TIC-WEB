@@ -8,6 +8,7 @@ const {
 } = require("../middlewares/validations");
 
 const {
+  getForm,
   getSolicitudes,
   getSolicitud,
   createSolicitud,
@@ -15,9 +16,11 @@ const {
   deleteSolicitud,
 } = require("../controllers/solicitudes");
 
-router.get("/", getSolicitudes);
+router.get("/", getForm);
 
 //verificar si del usuario
+router.get("/listar", getSolicitudes);
+
 router.get("/:id", validarAuth, getSolicitud);
 
 router.post("/", createSolicitud);

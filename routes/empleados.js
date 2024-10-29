@@ -28,17 +28,19 @@ router.use("/materiales", require("./materiales"));
 router.use("/pedidos", require("./pedidosMateriales"));
 
 //desde aca necesita auth
-router.get("/", validarJwt, validarAuth, getInfoEmpleado);
+router.get("/", getForm);
+
+router.get("/listar", getInfoEmpleado);
 
 //desde aca para admin
-router.get("/listar", validarJwt, validarAuth, validarAdmin, getEmpleados);
+router.get("/listar", validarAdmin, getEmpleados);
 
-router.get("/:id", validarJwt, validarAuth, validarAdmin, getEmpleado);
+router.get("/:id", validarAdmin, getEmpleado);
 
-router.post("/", validarJwt, validarAuth, validarAdmin, createEmpleado);
+router.post("/", validarAdmin, createEmpleado);
 
-router.put("/:id", validarJwt, validarAuth, validarAdmin, updateEmpleado);
+router.put("/:id", validarAdmin, updateEmpleado);
 
-router.delete("/:id", validarJwt, validarAuth, validarAdmin, deleteEmpleado);
+router.delete("/:id", validarAdmin, deleteEmpleado);
 
 module.exports = router;

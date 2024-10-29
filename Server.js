@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const errorHandler = require("./helpers/errorHandler.js");
+const {validarJwt, validarEmpleado} = require("./middlewares/validations.js")
 
 class Server {
   constructor() {
@@ -23,7 +24,7 @@ class Server {
 
   cargarRutas() {
     //ESTABLEZCO EL PREFIJO DE RUTA (/api/empleados) QUE SERÁ MANEJADO POR MI ROUTES/EMPLEADOS.JS
-    this.app.use("/api/empleados", require("./routes/empleados"));
+    this.app.use("/api/empleados", validarJwt, validarEmpleado,  require("./routes/empleados"));
     this.app.use("/api/home", require("./routes/home"));
     this.app.use("/api/auth", require("./routes/auth"));
     //MANEJO DE ERRORES GLOBAL, AL FINAL DE LAS RUTAS
@@ -36,6 +37,7 @@ class Server {
       //INTENTO CONECTARME A LA BD
       await mongoose.connect(process.env.MONGODB_URI); //DEBEN SER ASINCRONOS
       console.log("Conexión exitosa a la base de datos");
+      
     } catch (e) {
       console.error("Error al conectar con la base de datos:", e);
       mongoose.disconnect();
