@@ -1,4 +1,3 @@
-
 const Solicitud = require("../models/solicitudes");
 const Empleado = require("../models/empleados");
 const Categoria = require("../models/categorias");
@@ -30,9 +29,9 @@ const getSolicitud = async (req, res, next) => {
 
 const createSolicitud = async (req, res, next) => {
   try {
-    const empleadoId = await Empleado.findById(req.body.empleadoID);
-
-    const empleado = await Empleado.findById(empleadoId);
+    //id mesa de ayuda en el req, harcodear, despues del reasignar
+    const empleado = await Empleado.findById(req.body.empleadoID);
+    
     if (!empleado) {
       const error = new Error("No se encontro el empleado");
       error.statusCode = 404;

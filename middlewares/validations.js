@@ -1,7 +1,9 @@
 const jwt = require("jsonwebtoken");
 
 const validarJwt = async (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
+  const token = req.headers.token;
+
+  console.log(token);
 
   if (!token) {
     const error = new Error("No existe token");
@@ -34,7 +36,6 @@ const validarAdmin = (req, res, next) => {
     //res.status(401).json({ mensaje: "Autenticación no válida" });
   }
   return next();
-
 };
 
 //VERIFICA SI ESTA AUTENTICADO
