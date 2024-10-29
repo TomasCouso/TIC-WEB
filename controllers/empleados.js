@@ -14,7 +14,6 @@ const getEmpleados = async (req, res, next) => {
 
     res.status(200).json(empleados);
   } catch (e) {
-    //res.status(500).json({ mensaje: e.message });
     next(e); //SALTO AL ERRORHANDLER
   }
 };
@@ -32,7 +31,6 @@ const createEmpleado = async (req, res, next) => {
 
     res.status(201).json(empleadoGuardado);
   } catch (e) {
-    //res.status(500).json({ mensaje: e.message });
     next(e); //SALTO AL ERRORHANDLER
   }
 };
@@ -44,17 +42,12 @@ const getEmpleado = async (req, res, next) => {
     if (empleado) {
       res.status(200).json(empleado);
     } else {
-
       const error = new Error("No se encontro el empleado"); //PERSONALIZO ERROR
       error.statusCode = 404;
       throw error; //SALTO AL BLOQUE CATCH
-      //REVISAR SI NECESITAMOS ENVIAR O UTILIZAR ID Y EL ENCONTRADO: FALSE
-
-      //res.status(404).json({id, encontrado: false,}); CODIGO ORIGINAL
     }
   } catch (e) {
     next(e);
-    //res.status(500).json({ mensaje: e.message });
   }
 };
 
@@ -68,7 +61,6 @@ const updateEmpleado = async (req, res, next) => {
       const error = new Error("No se encontro el empleado");
       error.statusCode = 404;
       throw error;
-      //res.status(404).json({ mensaje: "Empleado no encontrado" });
     }
 
     const empleadoActualizado = await Empleado.findByIdAndUpdate(id, req.body, {
@@ -96,7 +88,6 @@ const updateEmpleado = async (req, res, next) => {
       const error = new Error("No se encontro el empleado");
       error.statusCode = 404;
       throw error;
-      //res.status(404).json({id, actualizado: false,});
     }
   } catch (e) {
     next(e);
@@ -112,7 +103,6 @@ const deleteEmpleado = async (req, res, next) => {
       const error = new Error("No se encontro el empleado");
       error.statusCode = 404;
       throw error;
-      //res.status(404).json({ message: "Empleado no encontrado" });
     }
 
     await PedidoMaterial.deleteMany({ "empleado._id": id });

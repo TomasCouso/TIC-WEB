@@ -13,11 +13,6 @@ const loginCallback = async (req, res, next) => {
     const error = new Error("No se encontro el codigo de autorización");
     error.statusCode = 400;
     return next(error); // SALTA AL ERROR HANDLER
-
-    /*return res
-      .status(400)
-      .json({ message: "No se encontro el codigo de autorización" });
-    */
   }
 
   const params = new URLSearchParams();
@@ -75,12 +70,6 @@ const loginCallback = async (req, res, next) => {
     );
 
     next(error);
-
-    /*
-        res.status(500).json({
-          message: "Authentication failed",
-          error: error.response?.data || error.message,
-        });*/
   }
 };
 

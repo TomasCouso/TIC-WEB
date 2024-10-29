@@ -37,12 +37,6 @@ const getMaterial = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    /*else {
-      res.status(404).json({
-        id,
-        encontrado: false,
-      });
-    }*/
     res.status(200).json(material);
   } catch (e) {
     next(e);
@@ -63,13 +57,6 @@ const updateMaterial = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-
-    /*
-      res.status(404).json({
-        id,
-        actualizado: false,
-      });
-    */
 
     await PedidoMaterial.updateMany(
       { "materiales._id": id },
