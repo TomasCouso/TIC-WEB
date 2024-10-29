@@ -2,6 +2,24 @@ const Solicitud = require("../models/solicitudes");
 const Empleado = require("../models/empleados");
 const Categoria = require("../models/categorias");
 
+const getForm = async (req, res, next) => {
+  try {
+    const categorias = await Categoria.find();
+    
+    if (!categorias) {
+      const error = new Error("No se encontraron categorias");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json({
+      categorias,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getSolicitudes = async (req, res, next) => {
   try {
     res.status(200).json(await Solicitud.find());
@@ -146,6 +164,7 @@ const deleteSolicitud = async (req, res, next) => {
 };
 
 module.exports = {
+  getForm,
   getSolicitudes,
   getSolicitud,
   createSolicitud,
