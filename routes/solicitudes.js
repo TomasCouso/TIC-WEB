@@ -3,7 +3,6 @@ const router = express.Router();
 
 const {
   validarAdmin,
-  validarJwt,
   validarAuth,
 } = require("../middlewares/validations");
 

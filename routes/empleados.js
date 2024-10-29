@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 //IMPORTO MIDDLEWARES
-const { validarAdmin, validarJwt, validarAuth } = require("../middlewares/validations");
+const { validarAdmin} = require("../middlewares/validations");
 
 const {
   getEmpleados,
@@ -28,10 +28,6 @@ router.use("/materiales", require("./materiales"));
 router.use("/pedidos", require("./pedidosMateriales"));
 
 //desde aca necesita auth
-router.get("/", getForm);
-
-router.get("/listar", getInfoEmpleado);
-
 //desde aca para admin
 router.get("/listar", validarAdmin, getEmpleados);
 

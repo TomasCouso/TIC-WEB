@@ -24,7 +24,7 @@ class Server {
 
   cargarRutas() {
     //ESTABLEZCO EL PREFIJO DE RUTA (/api/empleados) QUE SERÁ MANEJADO POR MI ROUTES/EMPLEADOS.JS
-    this.app.use("/api/empleados", validarJwt, validarEmpleado,  require("./routes/empleados"));
+    this.app.use("/api/empleados", validarJwt,  require("./routes/empleados")); //validarEmpleado
     this.app.use("/api/home", require("./routes/home"));
     this.app.use("/api/auth", require("./routes/auth"));
     //MANEJO DE ERRORES GLOBAL, AL FINAL DE LAS RUTAS
