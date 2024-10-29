@@ -43,11 +43,6 @@ const updateCategoria = async (req, res, next) => {
       const error = new Error("No se encontro la categoria");
       error.statusCode = 404;
       throw error;
-
-      /*res.status(404).json({
-        id,
-        actualizado: false,
-      });*/
     }
 
     await Solicitud.updateMany(

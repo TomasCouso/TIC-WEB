@@ -82,7 +82,6 @@ const updateSolicitud = async (req, res, next) => {
     const id = req.params.id;
 
     //cambio de categoria
-
     const solicitudActualizada = await Solicitud.findByIdAndUpdate(
       id,
       req.body,

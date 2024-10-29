@@ -26,7 +26,6 @@ const getInstructivo = async (req, res, next) => {
       const error = new Error("No se encontro el instructivo");
       error.statusCode = 404;
       throw error;
-      //res.status(404).json({ id, encontrado: false, });
     }
   } catch (e) {
     next(e);
@@ -60,13 +59,6 @@ const updateInstructivo = async (req, res, next) => {
     }
 
     res.status(200).json(instructivoActualizado);
-    /*else {
-      res.status(404).json({
-        id,
-        actualizado: false,
-      });
-    }
-  */
   } catch (e) {
     next(e);
   }

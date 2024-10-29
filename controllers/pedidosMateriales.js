@@ -87,7 +87,6 @@ const updatePedido = async (req, res, next) => {
     const id = req.params.id;
 
     //cambio de material
-
     const pedidoMaterialActualizado = await PedidosMateriales.findByIdAndUpdate(
       id,
       req.body,
@@ -98,11 +97,6 @@ const updatePedido = async (req, res, next) => {
       const error = new Error("No se encontro el pedido de materiales");
       error.statusCode = 404;
       throw error;
-
-      /*res.status(404).json({
-        id,
-        actualizado: false,
-      });*/
     }
 
     await Empleado.updateOne(
