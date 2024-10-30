@@ -26,6 +26,7 @@ const { login } = require("../controllers/auth");
 //router.use("/maquinas", require("../routes/maquinas"));
 router.use("/materiales", require("./materiales"));
 router.use("/pedidos", require("./pedidosMateriales"));
+router.use("/categorias", require("./categorias"));
 
 //desde aca necesita auth
 //desde aca para admin
