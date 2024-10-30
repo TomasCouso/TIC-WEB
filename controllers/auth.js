@@ -1,6 +1,7 @@
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
 const { removeListener } = require("../models/empleados");
+const { checkExists } = require("./helpers/errorHandler");
 
 const loginMicrosoft = (req, res) => {
   res.redirect(getUrlLogin());
@@ -9,11 +10,7 @@ const loginMicrosoft = (req, res) => {
 const loginCallback = async (req, res, next) => {
   const { code } = req.query;
 
-  if (!code) {
-    const error = new Error("No se encontro el codigo de autorización");
-    error.statusCode = 400;
-    return next(error); // SALTA AL ERROR HANDLER
-  }
+  checkExists(code, "No se encontró el código de autorización");
 
   const params = new URLSearchParams();
   params.append("client_id", process.env.CLIENT_ID);
@@ -42,14 +39,9 @@ const loginCallback = async (req, res, next) => {
     const email = user.mail;
 
     // verificar que el email sea de la universidad
-    if (
-      !email.endsWith("@alu.inspt.utn.edu.ar") &&
-      !email.endsWith("@inspt.utn.edu.ar")
-    ) {
-      const error = new Error("Acceso denegado");
-      error.statusCode = 403;
-      throw error;
-    }
+    isValidEmail = (email.endsWith("@alu.inspt.utn.edu.ar") || email.endsWith("@inspt.utn.edu.ar"));
+
+    checkExists(isValidEmail, "Acceso denegado", 403);
 
     // crear el token de acceso con email de usuario
     const appToken = jwt.sign({ email }, process.env.JWT_SECRET, {
@@ -58,17 +50,11 @@ const loginCallback = async (req, res, next) => {
 
     //guardar el token en la variable de req
     //req.token = appToken;
-
     res.status(200).json({
       mensaje: "Inicio de sesión exitoso",
       token: appToken,
     });
   } catch (error) {
-    console.error(
-      "Error en el proceso de autenticación:",
-      error.response?.data || error.message
-    );
-
     next(error);
   }
 };

@@ -1,7 +1,14 @@
-//EL CODIGO RECIBE UN ERROR, LE DA FORMATO Y DEVUELVE EL JSON
+const checkExists = (resource, message = "Recurso no encontrado", statusCode = 500) => {
+    if (!resource) {
+        const error = new Error(message);
+        error.statusCode = statusCode;
+        throw error;
+    }
+};
+
 const errorHandler = (err, req, res, next) => { 
-    const statusCode = err.statusCode || 500; // EL 500 ES POR DEFECTO POR SI NO HAY NINGUN CODIGO ESPECIFICO
-    const message = err.message || "Error desconocido"; // AQUI VA EL MENSAJE PERSONALIZADO O UN MENSAJE GENERICO 
+    const statusCode = err.statusCode || 500;
+    const message = err.message || "Error desconocido";
 
     res.status(statusCode).json({
         status: "ERROR",

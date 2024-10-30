@@ -10,16 +10,10 @@ const {
   deleteMaterial,
 } = require("../controllers/materiales");
 
-//middlewares
-
 router.get("/", getMateriales);
-
 router.get("/:id", getMaterial);
-
 router.post("/", createMaterial);
-
 router.put("/:id", updateMaterial);
-
 router.delete("/:id", deleteMaterial);
 
 module.exports = router;

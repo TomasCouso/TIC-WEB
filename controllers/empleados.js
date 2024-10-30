@@ -1,20 +1,16 @@
 const Empleado = require("../models/empleados");
 const PedidoMaterial = require("../models/pedidosMateriales");
 const Solicitud = require("../models/solicitudes");
+const { checkExists } = require("./helpers/errorHandler");
 
 const getEmpleados = async (req, res, next) => {
   try {
     const empleados = await Empleado.find();
-
-    if (!empleados) {
-      const error = new Error("No se encontraron empleados"); //PERSONALIZO ERROR
-      error.statusCode = 404;
-      throw error; //SALTO AL BLOQUE CATCH
-    }
+    checkExists(empleados, "No se encontraron empleados", 404);
 
     res.status(200).json(empleados);
   } catch (e) {
-    next(e); //SALTO AL ERRORHANDLER
+    next(e);
   }
 };
 
@@ -22,30 +18,22 @@ const createEmpleado = async (req, res, next) => {
   try {
     const nuevoEmpleado = new Empleado(req.body);
     const empleadoGuardado = await nuevoEmpleado.save();
-
-    if (!nuevoEmpleado.nombre) {
-      const error = new Error("No se encontro el nombre del empleado"); //PERSONALIZO ERROR
-      error.statusCode = 404;
-      throw error; //SALTO AL BLOQUE CATCH
-    }
+    checkExists(nuevoEmpleado.nombre, "No se encontro el nombre del empleado", 404);
 
     res.status(201).json(empleadoGuardado);
   } catch (e) {
-    next(e); //SALTO AL ERRORHANDLER
+    next(e);
   }
 };
 
 const getEmpleado = async (req, res, next) => {
   try {
-    let id = req.params.id;
+    const id = req.params.id;
     const empleado = await Empleado.findById(id);
-    if (empleado) {
-      res.status(200).json(empleado);
-    } else {
-      const error = new Error("No se encontro el empleado"); //PERSONALIZO ERROR
-      error.statusCode = 404;
-      throw error; //SALTO AL BLOQUE CATCH
-    }
+
+    checkExists(empleado, "No se encontro el empleado", 404);
+
+    res.status(200).json(empleado);
   } catch (e) {
     next(e);
   }
@@ -54,18 +42,11 @@ const getEmpleado = async (req, res, next) => {
 const updateEmpleado = async (req, res, next) => {
   try {
     const id = req.params.id;
-
     const empleadoAnterior = await Empleado.findById(id);
 
-    if (!empleadoAnterior) {
-      const error = new Error("No se encontro el empleado");
-      error.statusCode = 404;
-      throw error;
-    }
+    checkExists(empleadoAnterior, "No se encontro el empleado", 404);
 
-    const empleadoActualizado = await Empleado.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const empleadoActualizado = await Empleado.findByIdAndUpdate(id, req.body, { new: true, });
 
     if (
       empleadoActualizado &&
@@ -82,13 +63,8 @@ const updateEmpleado = async (req, res, next) => {
       );
     }
 
-    if (empleadoActualizado) {
-      res.status(200).json(empleadoActualizado);
-    } else {
-      const error = new Error("No se encontro el empleado");
-      error.statusCode = 404;
-      throw error;
-    }
+    checkExists(empleadoActualizado, "No se encontro el empleado", 404);
+    res.status(200).json(empleadoActualizado);
   } catch (e) {
     next(e);
   }
@@ -99,11 +75,7 @@ const deleteEmpleado = async (req, res, next) => {
     const id = req.params.id;
     const empleadoEliminado = await Empleado.findByIdAndDelete(id);
 
-    if (!empleadoEliminado) {
-      const error = new Error("No se encontro el empleado");
-      error.statusCode = 404;
-      throw error;
-    }
+    checkExists(empleadoEliminado, "No se encontro el empleado", 404);
 
     await PedidoMaterial.deleteMany({ "empleado._id": id });
     await Solicitud.deleteMany({ "empleado._id": id });
@@ -118,31 +90,19 @@ const deleteEmpleado = async (req, res, next) => {
 
 const getInfoEmpleado = async (req, res, next) => {
   try {
-    //el middleware tiene que poner al empeado en el user
     const empleadoId = req.user.id;
     const empleado = await Empleado.findById(empleadoId);
 
-    if (!empleado) {
-      const error = new Error("No se encontro el empleado");
-      error.statusCode = 404;
-      throw error;
-      //res.status(404).json({ mensaje: "Empleado no encontrado" });
-    }
+    checkExists(empleado, "No se encontro el empleado", 404);
 
     const pedidosPendientes = empleado.pedidosMateriales.filter(
       (pedido) => pedido.estado === "pendiente"
     );
-
     const solicitudesPendientes = empleado.solicitudes.filter(
       (solicitud) => solicitud.estado === "pendiente"
     );
 
-    res.status(200).json({
-      empleado,
-      pedidosPendientes,
-      solicitudesPendientes,
-    });
-
+    res.status(200).json({ empleado, pedidosPendientes, solicitudesPendientes });
   } catch (e) {
     next(e);
   }

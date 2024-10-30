@@ -1,13 +1,14 @@
 const Instructivo = require("../models/instructivos");
+const { checkExists } = require("../helpers/errorHandler");
 
 const getInstructivos = async (req, res, next) => {
-  let instructivos; //CREO UNA VARIABLE PARA GUARDAR LOS INSTRUCTIVOS PARA QUE SI NECESITAMOS CAMBIAR ALGO SEA MAS FACIL DESPUES
+  let instructivos;
 
   try {
     if (req.user && (req.user.rol === "ADMIN" || req.user.rol === "EMPLEADO")) {
-      instructivos = await Instructivo.find(); //DEVUELVO TODOS LOS INSTRUCTIVOS
+      instructivos = await Instructivo.find();
     } else {
-      instructivos = await Instructivo.find({ soloEmpleados: false }); //DEVUELVO SOLO LOS INSTRUCTIVOS QUE NO SON PARA EMPLEADOS
+      instructivos = await Instructivo.find({ soloEmpleados: false });
     }
 
     return res.status(200).json(instructivos);
@@ -20,13 +21,9 @@ const getInstructivo = async (req, res, next) => {
   try {
     const id = req.params.id;
     const instructivo = await Instructivo.findById(id);
-    if (instructivo) {
-      res.status(200).json(instructivo);
-    } else {
-      const error = new Error("No se encontro el instructivo");
-      error.statusCode = 404;
-      throw error;
-    }
+    checkExists(instructivo, "No se encontro el instructivo", 404);
+
+    res.status(200).json(instructivo);
   } catch (e) {
     next(e);
   }
@@ -46,18 +43,9 @@ const updateInstructivo = async (req, res, next) => {
   try {
     const id = req.params.id;
     const instructivoActualizado = await Instructivo.findByIdAndUpdate(
-      id,
-      req.body, {
-      new: true, runValidators: true,
-    }
+      id, req.body, { new: true, runValidators: true }
     );
-
-    if (!instructivoActualizado) {
-      const error = new Error("No se encontro el instructivo");
-      error.statusCode = 404;
-      throw error;
-    }
-
+    checkExists(instructivoActualizado, "No se encontro el instructivo", 404);
     res.status(200).json(instructivoActualizado);
   } catch (e) {
     next(e);
@@ -68,14 +56,9 @@ const deleteInstructivo = async (req, res, next) => {
   try {
     const id = req.params.id;
     const instructivoEliminado = await Instructivo.findByIdAndDelete(id);
-    
-    if (instructivoEliminado) {
-      res.status(200).json({ mensaje: "Instructivo eliminado" });
-    } else {
-      const error = new Error("No se encontro el instructivo");
-      error.statusCode = 404;
-      throw error;
-    }
+
+    checkExists(instructivoEliminado, "No se encontro el instructivo", 404);
+    res.status(200).json({ mensaje: "Instructivo eliminado" });
   } catch (e) {
     next(e);
   }
