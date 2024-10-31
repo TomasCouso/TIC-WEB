@@ -28,8 +28,8 @@ const empleadoSchema = new mongoose.Schema(
     },
     rol: {
       type: String,
-      enum: ["admin", "empleado"],
-      default: "empleado",
+      enum: ["admin", "becario"],
+      default: "becario",
     },
     lastLogin: {
       type: Date,

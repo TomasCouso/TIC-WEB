@@ -10,8 +10,6 @@ const {
   deletePedido,
 } = require("../controllers/pedidosMateriales");
 
-//middlewares
-
 router.get("/", getPedidos);
 
 router.get("/:id", getPedido);

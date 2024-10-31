@@ -1,6 +1,5 @@
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
-const { removeListener } = require("../models/empleados");
 
 const loginMicrosoft = (req, res) => {
   res.redirect(getUrlLogin());
@@ -39,25 +38,27 @@ const loginCallback = async (req, res, next) => {
     );
 
     const user = userResponse.data;
-    const email = user.mail;
+    const datosUsuario = {
+      email: user.mail,
+      nombre: user.displayName,
+    };
 
     // verificar que el email sea de la universidad
     if (
-      !email.endsWith("@alu.inspt.utn.edu.ar") &&
-      !email.endsWith("@inspt.utn.edu.ar")
+      !datosUsuario.email.endsWith("@alu.inspt.utn.edu.ar") &&
+      !datosUsuario.email.endsWith("@inspt.utn.edu.ar")
     ) {
       const error = new Error("Acceso denegado");
       error.statusCode = 403;
       throw error;
     }
 
-    // crear el token de acceso con email de usuario
-    const appToken = jwt.sign({ email }, process.env.JWT_SECRET, {
+    // crear el token de acceso con el usuario
+    const appToken = jwt.sign({ datosUsuario }, process.env.JWT_SECRET, {
       expiresIn: "5h",
     });
 
-    //guardar el token en la variable de req
-    //req.token = appToken;
+    res.set("Authorization", `Bearer ${appToken}`);
 
     res.status(200).json({
       mensaje: "Inicio de sesión exitoso",

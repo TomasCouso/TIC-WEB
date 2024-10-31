@@ -47,9 +47,11 @@ const updateInstructivo = async (req, res, next) => {
     const id = req.params.id;
     const instructivoActualizado = await Instructivo.findByIdAndUpdate(
       id,
-      req.body, {
-      new: true, runValidators: true,
-    }
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
     );
 
     if (!instructivoActualizado) {
@@ -68,7 +70,7 @@ const deleteInstructivo = async (req, res, next) => {
   try {
     const id = req.params.id;
     const instructivoEliminado = await Instructivo.findByIdAndDelete(id);
-    
+
     if (instructivoEliminado) {
       res.status(200).json({ mensaje: "Instructivo eliminado" });
     } else {

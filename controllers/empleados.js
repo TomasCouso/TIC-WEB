@@ -118,7 +118,6 @@ const deleteEmpleado = async (req, res, next) => {
 
 const getInfoEmpleado = async (req, res, next) => {
   try {
-    //el middleware tiene que poner al empeado en el user
     const empleadoId = req.user.id;
     const empleado = await Empleado.findById(empleadoId);
 
@@ -142,7 +141,6 @@ const getInfoEmpleado = async (req, res, next) => {
       pedidosPendientes,
       solicitudesPendientes,
     });
-
   } catch (e) {
     next(e);
   }

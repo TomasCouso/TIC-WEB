@@ -10,7 +10,6 @@ router.use("/noticias", require("./noticias"));
 
 router.use("/instructivos", require("./instructivos"));
 
-//debe iniciar sesion para acceder a esta ruta
 router.use("/solicitudes", [validarJwt], require("./solicitudes"));
 
 router.get("/", getIndex);

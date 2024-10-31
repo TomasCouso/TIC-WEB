@@ -10,8 +10,6 @@ const {
   deleteMaterial,
 } = require("../controllers/materiales");
 
-//middlewares
-
 router.get("/", getMateriales);
 
 router.get("/:id", getMaterial);

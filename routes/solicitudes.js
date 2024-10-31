@@ -1,10 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const {
-  validarAdmin,
-  validarAuth,
-} = require("../middlewares/validations");
+const { validarEmpleado } = require("../middlewares/validations");
 
 const {
   getForm,
@@ -17,17 +14,14 @@ const {
 
 router.get("/", getForm);
 
-//verificar si del usuario
-router.get("/listar", getSolicitudes);
+router.get("/listar", [validarEmpleado], getSolicitudes);
 
-router.get("/:id", validarAuth, getSolicitud);
+router.get("/:id", [validarEmpleado], getSolicitud);
 
 router.post("/", createSolicitud);
 
-//esta autorizada y empleado o admin
-router.put("/:id", validarAuth, validarAdmin, updateSolicitud);
+router.put("/:id", [validarEmpleado], updateSolicitud);
 
-//esta autorizada y admin
-router.delete("/:id", validarAuth, validarAdmin, deleteSolicitud);
+router.delete("/:id", [validarEmpleado], deleteSolicitud);
 
 module.exports = router;

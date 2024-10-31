@@ -10,16 +10,21 @@ const {
   deleteInstructivo,
 } = require("../controllers/instructivos");
 
-router.get("/", getInstructivos);
+const {
+  esEmpleado,
+  validarJwt,
+  validarAdmin,
+  validarEmpleado,
+} = require("../middlewares/validations");
 
-router.get("/:id", getInstructivo);
+router.get("/", [esEmpleado], getInstructivos);
 
-//estas 2 autorizadas y empleado o admin
-router.post("/", createInstructivo);
+router.get("/:id", [esEmpleado], getInstructivo);
 
-router.put("/:id", updateInstructivo);
+router.post("/", [validarJwt, validarEmpleado], createInstructivo);
 
-//esta autorizada y admin
-router.delete("/:id", deleteInstructivo);
+router.put("/:id", [validarJwt, validarEmpleado], updateInstructivo);
+
+router.delete("/:id", [validarJwt, validarAdmin], deleteInstructivo);
 
 module.exports = router;

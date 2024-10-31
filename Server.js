@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const errorHandler = require("./helpers/errorHandler.js");
-const {validarJwt, validarEmpleado} = require("./middlewares/validations.js")
+const {validarJwt, validarEmpleado, existeToken, esEmpleado} = require("./middlewares/validations.js")
 
 class Server {
   constructor() {
@@ -24,8 +24,8 @@ class Server {
 
   cargarRutas() {
     //ESTABLEZCO EL PREFIJO DE RUTA (/api/empleados) QUE SERÁ MANEJADO POR MI ROUTES/EMPLEADOS.JS
-    this.app.use("/api/empleados", validarJwt,  require("./routes/empleados")); //validarEmpleado
-    this.app.use("/api/home", require("./routes/home"));
+    this.app.use("/api/empleados", [validarJwt, esEmpleado, validarEmpleado], require("./routes/empleados"));
+    this.app.use("/api/home", [existeToken, esEmpleado], require("./routes/home"));
     this.app.use("/api/auth", require("./routes/auth"));
     //MANEJO DE ERRORES GLOBAL, AL FINAL DE LAS RUTAS
     this.app.use(errorHandler);
