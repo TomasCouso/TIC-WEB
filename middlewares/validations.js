@@ -19,29 +19,35 @@ const validarJwt = async (req, res, next) => {
       return next(error);
     }
     req.user = user.datosUsuario;
+    console.log("validarJwt", req.user);
     next();
   });
 };
 
 //VERIFICA SI ESTA AUTENTICADO COMO ADMIN
 const validarAdmin = (req, res, next) => {
-  if (req.user.rol !== "admin") {
+  console.log("validar empleado", req.usuario);
+
+  if (req.usuario.rol !== "admin") {
     const error = new Error("Autenticación no válida ADMIN");
     error.statusCode = 401;
     return next(error);
   }
-   next();
+  next();
 };
 
-//VERIFICA SI es admin o empleado
 const validarEmpleado = (req, res, next) => {
-  // console.log("validar empleado", req.user);
+  console.log("validar empleado", req.usuario);
 
-  if (req.user.rol !== "admin" && req.user.rol !== "becario") {
+  if (
+    !req.usuario ||
+    (req.usuario.rol !== "admin" && req.usuario.rol !== "becario")
+  ) {
     const error = new Error("Autenticación no válida de empleado");
     error.statusCode = 401;
     return next(error);
   }
+
   next();
 };
 
@@ -60,23 +66,23 @@ const esEmpleado = async (req, res, next) => {
         try {
           const empleado = await Empleado.findOne({ email });
           if (empleado) {
-            req.user = {
+            req.usuario = {
               id: empleado._id,
               nombre: empleado.nombre,
               rol: empleado.rol,
               email: empleado.email,
             };
+            console.log("es empleado", req.usuario);
           }
         } catch (e) {
-          return next(); 
+          return next();
         }
       }
 
-      // console.log("es empleado",req.user);
-      next(); 
+      next();
     });
   } else {
-    next(); 
+    next();
   }
 };
 
@@ -86,13 +92,13 @@ const existeToken = (req, res, next) => {
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
       if (!err) {
-        req.user = user.datosUsuario;
+        req.usuario = user.datosUsuario;
       }
-      // console.log(req.user);
-      next(err); 
+      console.log("existeToken", req.usuario);
+      next(err);
     });
   } else {
-    next(); 
+    next();
   }
 };
 

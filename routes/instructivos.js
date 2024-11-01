@@ -11,15 +11,14 @@ const {
 } = require("../controllers/instructivos");
 
 const {
-  esEmpleado,
   validarJwt,
   validarAdmin,
   validarEmpleado,
 } = require("../middlewares/validations");
 
-router.get("/", [esEmpleado], getInstructivos);
+router.get("/", getInstructivos);
 
-router.get("/:id", [esEmpleado], getInstructivo);
+router.get("/:id", getInstructivo);
 
 router.post("/", [validarJwt, validarEmpleado], createInstructivo);
 

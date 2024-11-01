@@ -5,7 +5,7 @@ const Categoria = require("../models/categorias");
 const getForm = async (req, res, next) => {
   try {
     const categorias = await Categoria.find();
-    
+
     if (!categorias) {
       const error = new Error("No se encontraron categorias");
       error.statusCode = 404;
@@ -49,15 +49,14 @@ const createSolicitud = async (req, res, next) => {
   try {
     //id mesa de ayuda en el req, harcodear, despues del reasignar
     const empleado = await Empleado.findById(req.body.empleadoID);
-    
+
     if (!empleado) {
       const error = new Error("No se encontro el empleado");
       error.statusCode = 404;
       throw error;
     }
 
-    const categoriaId = await Categoria.findById(req.body.categoriaID);
-    const categoria = await Categoria.findById(categoriaId);
+    const categoria = await Categoria.findById(req.body.categoriaID);
 
     if (!categoria) {
       const error = new Error("No se encontro la categoria");
@@ -68,11 +67,11 @@ const createSolicitud = async (req, res, next) => {
     const nuevaSolicitud = new Solicitud({
       ...req.body,
       empleado: {
-        _id: empleadoId,
+        _id: empleado._id,
         nombre: empleado.nombre,
       },
       categoria: {
-        _id: categoriaId,
+        _id: categoria._id,
         nombre: categoria.nombre,
       },
     });

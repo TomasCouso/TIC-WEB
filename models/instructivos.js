@@ -14,10 +14,6 @@ const instructivoSchema = new mongoose.Schema(
       type: String, //URL DEL ACHIVO
       required: true,
     },
-    fechaCreacion: {
-      type: Date,
-      default: Date.now,
-    },
     autor: {
       type: String,
       required: true,
