@@ -26,7 +26,7 @@ const validarJwt = async (req, res, next) => {
 
 //VERIFICA SI ESTA AUTENTICADO COMO ADMIN
 const validarAdmin = (req, res, next) => {
-  console.log("validar empleado", req.usuario);
+  console.log("validar admin", req.usuario);
 
   if (req.usuario.rol !== "admin") {
     const error = new Error("Autenticación no válida ADMIN");

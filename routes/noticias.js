@@ -14,12 +14,11 @@ const {
   validarAdmin,
   validarJwt,
   validarEmpleado,
-  esEmpleado,
 } = require("../middlewares/validations");
 
-router.get("/", [esEmpleado], getNoticias);
+router.get("/", getNoticias);
 
-router.get("/:id", [esEmpleado], getNoticia);
+router.get("/:id", getNoticia);
 
 router.post("/", [validarJwt, validarEmpleado], createNoticia);
 

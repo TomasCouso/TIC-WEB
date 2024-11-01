@@ -10,13 +10,8 @@ const noticiaSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    fechaPublicacion: {
-      type: Date,
-      default: Date.now,
-    },
     autor: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Empleado",
+      type: String,
       required: true,
     },
   },
