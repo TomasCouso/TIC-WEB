@@ -1,5 +1,4 @@
 const express = require("express");
-
 const router = express.Router();
 
 const {
@@ -11,13 +10,9 @@ const {
 } = require("../controllers/categorias");
 
 router.get("/", getCategorias);
-
 router.get("/:id", getCategoria);
-
 router.post("/", createCategoria);
-
 router.put("/:id", updateCategoria);
-
 router.delete("/:id", deleteCategoria);
 
 module.exports = router;

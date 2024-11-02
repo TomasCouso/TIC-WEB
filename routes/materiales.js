@@ -1,5 +1,4 @@
 const express = require("express");
-
 const router = express.Router();
 
 const {
@@ -11,13 +10,9 @@ const {
 } = require("../controllers/materiales");
 
 router.get("/", getMateriales);
-
 router.get("/:id", getMaterial);
-
 router.post("/", createMaterial);
-
 router.put("/:id", updateMaterial);
-
 router.delete("/:id", deleteMaterial);
 
 module.exports = router;
