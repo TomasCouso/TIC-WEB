@@ -67,9 +67,7 @@ const createSolicitud = async (req, res, next) => {
 
     req.body.categoria.nombre = categoria.nombre;
 
-    const nuevaSolicitud = new Solicitud({
-      ...req.body,
-    });
+    const nuevaSolicitud = new Solicitud(req.body);
 
     const solicitudGuardada = await nuevaSolicitud.save();
 

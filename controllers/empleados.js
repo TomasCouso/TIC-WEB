@@ -37,8 +37,7 @@ const createEmpleado = async (req, res, next) => {
 
 const getEmpleado = async (req, res, next) => {
   try {
-    let id = req.params.id;
-    const empleado = await Empleado.findById(id);
+    const empleado = await Empleado.findById(req.params.id);
     if (empleado) {
       res.status(200).json(empleado);
     } else {
@@ -118,8 +117,7 @@ const deleteEmpleado = async (req, res, next) => {
 
 const getInfoEmpleado = async (req, res, next) => {
   try {
-    const empleadoId = req.user.id;
-    const empleado = await Empleado.findById(empleadoId);
+    const empleado = await Empleado.findById(req.usuario.id);
 
     if (!empleado) {
       const error = new Error("No se encontro el empleado");
