@@ -102,10 +102,27 @@ const existeToken = (req, res, next) => {
   }
 };
 
+const validarPrimerAdmin = async (req, res, next) => {
+  const administradores = await Empleado.find({ rol: "admin" });
+
+  if (administradores.length === 0 && req.body.rol === "admin") {
+    return next();
+  }
+
+  const error = new Error(
+    administradores.length > 0
+      ? `Ya existe un administrador. Comuníquese con: ${administradores[0].email}`
+      : "No está autorizado para crear el primer administrador."
+  );
+  error.statusCode = 403;
+  next(error);
+};
+
 module.exports = {
   validarAdmin,
   validarJwt,
   validarEmpleado,
   esEmpleado,
   existeToken,
+  validarPrimerAdmin,
 };
