@@ -47,8 +47,7 @@ const getSolicitud = async (req, res, next) => {
 
 const createSolicitud = async (req, res, next) => {
   try {
-    //id mesa de ayuda en el req, harcodear, despues del reasignar
-    const empleado = await Empleado.findById(req.body.empleadoID);
+    const empleado = await Empleado.findById(req.body.empleado._id);
 
     if (!empleado) {
       const error = new Error("No se encontro el empleado");
@@ -56,7 +55,9 @@ const createSolicitud = async (req, res, next) => {
       throw error;
     }
 
-    const categoria = await Categoria.findById(req.body.categoriaID);
+    req.body.empleado.nombre = empleado.nombre;
+
+    const categoria = await Categoria.findById(req.body.categoria._id);
 
     if (!categoria) {
       const error = new Error("No se encontro la categoria");
@@ -64,16 +65,10 @@ const createSolicitud = async (req, res, next) => {
       throw error;
     }
 
+    req.body.categoria.nombre = categoria.nombre;
+
     const nuevaSolicitud = new Solicitud({
       ...req.body,
-      empleado: {
-        _id: empleado._id,
-        nombre: empleado.nombre,
-      },
-      categoria: {
-        _id: categoria._id,
-        nombre: categoria.nombre,
-      },
     });
 
     const solicitudGuardada = await nuevaSolicitud.save();
