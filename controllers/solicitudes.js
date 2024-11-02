@@ -1,20 +1,14 @@
 const Solicitud = require("../models/solicitudes");
 const Empleado = require("../models/empleados");
 const Categoria = require("../models/categorias");
+const { checkExists } = require("../helpers/errorHandler"); 
 
 const getForm = async (req, res, next) => {
   try {
     const categorias = await Categoria.find();
-
-    if (!categorias) {
-      const error = new Error("No se encontraron categorias");
-      error.statusCode = 404;
-      throw error;
-    }
-
-    res.status(200).json({
-      categorias,
-    });
+    checkExists(categorias, "No se encontraron categorias", 404);
+    
+    res.status(200).json({ categorias});
   } catch (error) {
     next(error);
   }
