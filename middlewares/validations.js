@@ -1,53 +1,29 @@
 const jwt = require("jsonwebtoken");
 const Empleado = require("../models/empleados");
+const { checkExists } = require("../helpers/errorHandler");
 
 const validarJwt = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
-
-  // console.log(token);
-
-  if (!token) {
-    const error = new Error("No existe token");
-    error.statusCode = 403;
-    return next(error);
-  }
+  checkExists(token, "No existe token", 403);
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      const error = new Error("Token inválido");
-      error.statusCode = 403;
-      return next(error);
-    }
+    checkExists(!err, "Token inválido", 403);
     req.user = user.datosUsuario;
+  
     console.log("validarJwt", req.user);
     next();
   });
 };
 
-//VERIFICA SI ESTA AUTENTICADO COMO ADMIN
 const validarAdmin = (req, res, next) => {
   console.log("validar admin", req.usuario);
-
-  if (req.usuario.rol !== "admin") {
-    const error = new Error("Autenticación no válida ADMIN");
-    error.statusCode = 401;
-    return next(error);
-  }
+  checkExists(req.usuario.rol === "admin", "Autenticación no válida", 401);
   next();
 };
 
 const validarEmpleado = (req, res, next) => {
   console.log("validar empleado", req.usuario);
-
-  if (
-    !req.usuario ||
-    (req.usuario.rol !== "admin" && req.usuario.rol !== "becario")
-  ) {
-    const error = new Error("Autenticación no válida de empleado");
-    error.statusCode = 401;
-    return next(error);
-  }
-
+  checkExists((req.usuario || req.usuario.rol === "becario"), "Autenticación no válida", 401);
   next();
 };
 
@@ -78,7 +54,6 @@ const esEmpleado = async (req, res, next) => {
           return next();
         }
       }
-
       next();
     });
   } else {

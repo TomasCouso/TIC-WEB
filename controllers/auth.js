@@ -1,5 +1,6 @@
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
+const { checkExists } = require("../helpers/errorHandler");
 
 const loginMicrosoft = (req, res) => {
   res.redirect(getUrlLogin());
@@ -8,11 +9,7 @@ const loginMicrosoft = (req, res) => {
 const loginCallback = async (req, res, next) => {
   const { code } = req.query;
 
-  if (!code) {
-    const error = new Error("No se encontro el codigo de autorización");
-    error.statusCode = 400;
-    return next(error); // SALTA AL ERROR HANDLER
-  }
+  checkExists(code, "No se encontro el codigo de autorización", 400);
 
   const params = new URLSearchParams();
   params.append("client_id", process.env.CLIENT_ID);
@@ -22,54 +19,34 @@ const loginCallback = async (req, res, next) => {
   params.append("redirect_uri", process.env.REDIRECT_URI);
 
   try {
-    // obtener un token de acceso
     const response = await axios.post(
       `https://login.microsoftonline.com/${process.env.TENANT_ID}/oauth2/v2.0/token`,
       params,
       { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
     );
-
     const accessToken = response.data.access_token;
 
-    // obtener información del usuario
     const userResponse = await axios.get(
       "https://graph.microsoft.com/v1.0/me",
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
 
     const user = userResponse.data;
-    const datosUsuario = {
-      email: user.mail,
-      nombre: user.displayName,
-    };
+    const datosUsuario = { email: user.mail, nombre: user.displayName };
 
-    // verificar que el email sea de la universidad
-    if (
-      !datosUsuario.email.endsWith("@alu.inspt.utn.edu.ar") &&
-      !datosUsuario.email.endsWith("@inspt.utn.edu.ar")
-    ) {
-      const error = new Error("Acceso denegado");
-      error.statusCode = 403;
-      throw error;
-    }
-
-    // crear el token de acceso con el usuario
-    const appToken = jwt.sign({ datosUsuario }, process.env.JWT_SECRET, {
-      expiresIn: "5h",
-    });
-
-    res.set("Authorization", `Bearer ${appToken}`);
-
-    res.status(200).json({
-      mensaje: "Inicio de sesión exitoso",
-      token: appToken,
-    });
-  } catch (error) {
-    console.error(
-      "Error en el proceso de autenticación:",
-      error.response?.data || error.message
+    checkExists(
+      datosUsuario.email.endsWith("@alu.inspt.utn.edu.ar") || datosUsuario.email.endsWith("@inspt.utn.edu.ar"),
+      "Acceso denegado", 403
     );
 
+    const appToken = jwt.sign({ datosUsuario }, process.env.JWT_SECRET, { expiresIn: "5h" });
+    checkExists(appToken, "Hubo un error al crear el token de acceso", 400);
+
+    res.set("Authorization", `Bearer ${appToken}`);
+    res.status(200).json({
+      mensaje: "Inicio de sesión exitoso", token: appToken,
+    });
+  } catch (error) {
     next(error);
   }
 };

@@ -4,13 +4,7 @@ const PedidoMaterial = require("../models/pedidosMateriales");
 const getMateriales = async (req, res, next) => {
   try {
     const materiales = await Material.find();
-
-    if (!materiales) {
-      const error = new Error("No se encontraron materiales");
-      error.statusCode = 404;
-      throw error;
-    }
-
+    checkExists(materiales, "No se encontraron materiales", 404);
     res.status(200).json(materiales);
   } catch (e) {
     next(e);
@@ -21,6 +15,7 @@ const createMaterial = async (req, res, next) => {
   try {
     const nuevoMaterial = new Material(req.body);
     const materialGuardado = await nuevoMaterial.save();
+    checkExists(materialGuardado, "Hubo un error al crear el material", 404);
     res.status(201).json(materialGuardado);
   } catch (e) {
     next(e);
@@ -29,14 +24,9 @@ const createMaterial = async (req, res, next) => {
 
 const getMaterial = async (req, res, next) => {
   try {
-    let id = req.params.id;
+    const id = req.params.id;
     const material = await Material.findById(id);
-
-    if (!material) {
-      const error = new Error("No se encontraron materiales");
-      error.statusCode = 404;
-      throw error;
-    }
+    checkExists(material, "No se encontro el material", 404);
     res.status(200).json(material);
   } catch (e) {
     next(e);
@@ -46,17 +36,11 @@ const getMaterial = async (req, res, next) => {
 const updateMaterial = async (req, res, next) => {
   try {
     const id = req.params.id;
-
-    const materialParaActualizar  = await Material.findByIdAndUpdate(id, req.body, {
-      new: true,
-      runValidators: true,
+    const materialParaActualizar = await Material.findByIdAndUpdate(id, req.body, {
+      new: true, runValidators: true,
     });
 
-    if (!materialParaActualizar) { //CAMBIE EL NOMBRE DE LA VARIABLE PARA QUE SEA MAS DESCRIPTIVA
-      const error = new Error("No se encontraron materiales");
-      error.statusCode = 404;
-      throw error;
-    }
+    checkExists(materialParaActualizar, "No se encontro el material", 404);
 
     await PedidoMaterial.updateMany(
       { "materiales._id": id },
@@ -72,14 +56,9 @@ const updateMaterial = async (req, res, next) => {
 const deleteMaterial = async (req, res, next) => {
   try {
     const id = req.params.id;
-
     const materialParaEliminar = await Material.findByIdAndDelete(id);
 
-    if (!materialParaEliminar) {
-      const error = new Error("No se encontraron materiales");
-      error.statusCode = 404;
-      throw error;
-    }
+    checkExists(materialParaEliminar, "No se encontro el material a eliminar", 404);
 
     const pedidoMaterialActualizado = await PedidoMaterial.updateMany(
       { "materiales._id": id },
@@ -91,10 +70,7 @@ const deleteMaterial = async (req, res, next) => {
       }
     );
 
-    res.status(200).json({
-      message: "Material eliminado y pedidos actualizados",
-      pedidoMaterialActualizado,
-    });
+    res.status(200).json({ message: "Material eliminado y pedidos actualizados", pedidoMaterialActualizado });
   } catch (e) {
     next(e);
   }

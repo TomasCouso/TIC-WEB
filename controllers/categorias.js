@@ -4,7 +4,9 @@ const Instructivo = require("../models/instructivos");
 
 const getCategorias = async (req, res, next) => {
   try {
-    res.status(200).json(await Categoria.find());
+    const categorias = await Categoria.find();
+    checkExists(categorias, "No se encontraron categorias", 404);
+    res.status(200).json(categorias);
   } catch (e) {
     next(e);
   }
@@ -12,7 +14,10 @@ const getCategorias = async (req, res, next) => {
 
 const getCategoria = async (req, res, next) => {
   try {
-    res.status(200).json(await Categoria.findById(req.params.id));
+    const id = req.params.id;
+    const categoria = await Categoria.findById(id);
+    checkExists(categoria, "No se encontro la categoria", 404);
+    res.status(200).json(categoria);
   } catch (e) {
     next(e);
   }
@@ -20,10 +25,10 @@ const getCategoria = async (req, res, next) => {
 
 const createCategoria = async (req, res, next) => {
   try {
-    const nuevaCategoria = new Categoria(req.body);
-    const categoriaGuardada = await nuevaCategoria.save();
-    res.status(201).json(categoriaGuardada);
-
+    const nuevoCategoria = new Categoria(req.body);
+    const categoriaGuardado = await nuevoCategoria.save();
+    checkExists(categoriaGuardado, "Hubo un error al crear la categoria", 404);
+    res.status(201).json(categoriaGuardado);
   } catch (e) {
     next(e);
   }
@@ -32,18 +37,8 @@ const createCategoria = async (req, res, next) => {
 const updateCategoria = async (req, res, next) => {
   try {
     const id = req.params.id;
-
-    const categoriaActualizada = await Categoria.findByIdAndUpdate(
-      id,
-      req.body,
-      { new: true, runValidators: true }
-    );
-
-    if (!categoriaActualizada) {
-      const error = new Error("No se encontro la categoria");
-      error.statusCode = 404;
-      throw error;
-    }
+    const categoriaActualizada = await Categoria.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+    checkExists(categoriaActualizada, "No se encontro la categoria", 404);
 
     await Solicitud.updateMany(
       { "categoria._id": id },
@@ -63,10 +58,7 @@ const updateCategoria = async (req, res, next) => {
       }
     );
 
-    res.status(200).json({
-      mensaje: "Categoria actualizada exitosamente ",
-      categoriaActualizada,
-    });
+    res.status(200).json({ mensaje: "Categoria actualizada exitosamente ", categoriaActualizada });
   } catch (e) {
     next(e);
   }
@@ -75,14 +67,9 @@ const updateCategoria = async (req, res, next) => {
 const deleteCategoria = async (req, res, next) => {
   try {
     const id = req.params.id;
-
     const categoriaEliminada = await Categoria.findByIdAndDelete(id);
 
-    if (!categoriaEliminada) {
-      const error = new Error("Categoria no encontrada");
-      error.status = 404;
-      throw error;
-    }
+    checkExists(categoriaEliminada, "No se encontro la categoria a eliminar", 404);
 
     await Solicitud.updateMany(
       { "categoria._id": id },
@@ -103,10 +90,7 @@ const deleteCategoria = async (req, res, next) => {
       }
     );
 
-    res.status(200).json({
-      mensaje: "Categoria eliminada, y Solicitud actualizada",
-      categoriaEliminada,
-    });
+    res.status(200).json({ mensaje: "Categoria eliminada, y Solicitud actualizada", categoriaEliminada });
   } catch (e) {
     next(e);
   }
