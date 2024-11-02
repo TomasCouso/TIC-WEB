@@ -6,7 +6,9 @@ const getPedidos = async (req, res, next) => {
   try {
     res.status(200).json(await PedidosMateriales.find());
   } catch (e) {
-    const error = new Error("Hubo un error al obtener los pedidos de materiales");
+    const error = new Error(
+      "Hubo un error al obtener los pedidos de materiales"
+    );
     error.statusCode = 404;
     next(e);
   }
@@ -14,7 +16,7 @@ const getPedidos = async (req, res, next) => {
 
 const createPedido = async (req, res, next) => {
   try {
-    const empleadoId = await Empleado.findById(req.body.empleadoId);
+    const empleadoId = await Empleado.findById(req.body.empleado._id);
 
     const empleado = await Empleado.findById(empleadoId);
     if (!empleado) {
@@ -40,13 +42,7 @@ const createPedido = async (req, res, next) => {
       });
     }
 
-    const nuevoPedidoMaterial = new PedidosMateriales({
-      ...req.body,
-      empleado: {
-        _id: empleadoId,
-        nombre: empleado.nombre,
-      },
-    });
+    const nuevoPedidoMaterial = new PedidosMateriales(req.body);
 
     const pedidoMaterialGuardado = await nuevoPedidoMaterial.save();
 
@@ -74,8 +70,8 @@ const getPedido = async (req, res, next) => {
       const error = new Error("No se encontro el pedido de materiales");
       error.statusCode = 404;
       throw error;
-    } 
-    
+    }
+
     res.status(200).json(pedidoMaterial);
   } catch (e) {
     next(e);

@@ -66,8 +66,6 @@ const createInstructivo = async (req, res, next) => {
       throw error;
     }
 
-    req.body.categoria.nombre = categoria.nombre;
-
     const nuevoInstructivo = new Instructivo(req.body);
     const instructivoGuardado = await nuevoInstructivo.save();
     res.status(201).json(instructivoGuardado);

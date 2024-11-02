@@ -55,8 +55,6 @@ const createSolicitud = async (req, res, next) => {
       throw error;
     }
 
-    req.body.empleado.nombre = empleado.nombre;
-
     const categoria = await Categoria.findById(req.body.categoria._id);
 
     if (!categoria) {
@@ -64,8 +62,6 @@ const createSolicitud = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-
-    req.body.categoria.nombre = categoria.nombre;
 
     const nuevaSolicitud = new Solicitud(req.body);
 
