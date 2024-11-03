@@ -6,7 +6,6 @@ const { checkExists } = require("../helpers/errorHandler");
 const getPedidos = async (req, res, next) => {
   try {
     const pedidos = await PedidosMateriales.find();
-    checkExists(pedidos, "No se encontraron pedidos de materiales", 404);
     res.status(200).json(pedidos);
   } catch (e) {
     next(e);
@@ -15,8 +14,7 @@ const getPedidos = async (req, res, next) => {
 
 const createPedido = async (req, res, next) => {
   try {
-    const empleadoId = await Empleado.findById(req.body.empleado._id);
-    const empleado = await Empleado.findById(empleadoId);
+    const empleado = await Empleado.findById(req.body.empleado._id);
     checkExists(empleado, "No se encontro el empleado", 404);
 
     const materialesValidos = await Promise.all(
@@ -30,14 +28,11 @@ const createPedido = async (req, res, next) => {
       (material) => material === null
     );
 
-    checkExists(materialesNoEncontrados.length === 0, "Algunos materiales no fueron encontrados", 404);
-
-    // if (materialesNoEncontrados.length > 0) {
-    //   return res.status(404).json({
-    //     mensaje: "Algunos materiales no fueron encontrados",
-    //     materialesNoEncontrados,
-    //   });
-    // }
+    checkExists(
+      materialesNoEncontrados.length === 0,
+      "Algunos materiales no fueron encontrados",
+      404
+    );
 
     const nuevoPedidoMaterial = new PedidosMateriales(req.body);
     const pedidoMaterialGuardado = await nuevoPedidoMaterial.save();
@@ -50,7 +45,6 @@ const createPedido = async (req, res, next) => {
     });
 
     await empleado.save();
-
     res.status(201).json(pedidoMaterialGuardado);
   } catch (e) {
     next(e);
@@ -59,10 +53,8 @@ const createPedido = async (req, res, next) => {
 
 const getPedido = async (req, res, next) => {
   try {
-    const id = req.params.id;
-    const pedidoMaterial = await PedidosMateriales.findById(id);
+    const pedidoMaterial = await PedidosMateriales.findById(req.params.id);
     checkExists(pedidoMaterial, "No se encontro el pedido de materiales", 404);
-
     res.status(200).json(pedidoMaterial);
   } catch (e) {
     next(e);
@@ -78,7 +70,11 @@ const updatePedido = async (req, res, next) => {
       { new: true, runValidators: true }
     );
 
-    checkExists(pedidoMaterialActualizado, "No se encontro el pedido de materiales", 404);
+    checkExists(
+      pedidoMaterialActualizado,
+      "No se encontro el pedido de materiales",
+      404
+    );
 
     await Empleado.updateOne(
       { "pedidosMateriales._id": id },
@@ -107,14 +103,15 @@ const deletePedido = async (req, res, next) => {
       id
     );
 
-    checkExists(pedidoMaterialEliminado, "No se encontro el pedido de materiales", 404);
-
-    const empleadoPedidoEliminado = await Empleado.updateOne(
+    checkExists(
+      pedidoMaterialEliminado,
+      "No se encontro el pedido de materiales",
+      404
+    );
+    await Empleado.updateOne(
       { "pedidosMateriales._id": id },
       { $pull: { pedidosMateriales: { _id: id } } }
     );
-
-    checkExists(empleadoPedidoEliminado, "Pedido eliminado, Empleado no actualizado", 404);
 
     res
       .status(200)

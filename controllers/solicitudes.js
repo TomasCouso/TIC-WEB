@@ -6,33 +6,25 @@ const { checkExists } = require("../helpers/errorHandler");
 const getForm = async (req, res, next) => {
   try {
     const categorias = await Categoria.find();
-    checkExists(categorias, "No se encontraron categorias", 404);
-
-    res.status(200).json({
-      categorias,
-    });
-  } catch (error) {
-    next(error);
+    res.status(200).json(categorias);
+  } catch (e) {
+    next(e);
   }
 };
 
 const getSolicitudes = async (req, res, next) => {
   try {
     const solicitudes = await Solicitud.find();
-    checkExists(solicitudes, "No se encontraron solicitudes", 404);
     res.status(200).json(solicitudes);
   } catch (e) {
     next(e);
   }
 };
 
-const getSolicitud = async (req, res, next) => { //este "message": "Cast to ObjectId failed for value \":id\" (type string) at path \"_id\" for model \"Solicitud\""
+const getSolicitud = async (req, res, next) => {
   try {
-    const id = req.params.id;
-
-    const solicitud = await Solicitud.findById(id);
+    const solicitud = await Solicitud.findById(req.params.id);
     checkExists(solicitud, "No se encontro la solicitud", 404);
-
     res.status(200).json(solicitud);
   } catch (e) {
     next(e);
@@ -59,7 +51,6 @@ const createSolicitud = async (req, res, next) => {
     });
 
     await empleado.save();
-
     res.status(201).json(solicitudGuardada);
   } catch (e) {
     next(e);
@@ -69,7 +60,6 @@ const createSolicitud = async (req, res, next) => {
 const updateSolicitud = async (req, res, next) => {
   try {
     const id = req.params.id;
-
     const solicitudActualizada = await Solicitud.findByIdAndUpdate(
       id,
       req.body,
@@ -105,13 +95,11 @@ const deleteSolicitud = async (req, res, next) => {
     const solicitudEliminada = await Solicitud.findByIdAndDelete(id);
 
     checkExists(solicitudEliminada, "No se encontro la solicitud", 404);
-
-    const empleadoSolicitudEliminada = await Empleado.updateOne(
+    
+    await Empleado.updateOne(
       { "solicitudes._id": id },
       { $pull: { solicitudes: { _id: id } } }
     );
-
-    checkExists(empleadoSolicitudEliminada, "Solicitud eliminada, Empleado no actualizado", 404);
 
     res
       .status(200)

@@ -5,7 +5,8 @@ const { checkExists } = require("../helpers/errorHandler");
 
 const getCategorias = async (req, res, next) => {
   try {
-    res.status(200).json(await Categoria.find());
+    const categorias = await Categoria.find();
+    res.status(200).json(categorias);
   } catch (e) {
     next(e);
   }
@@ -13,7 +14,9 @@ const getCategorias = async (req, res, next) => {
 
 const getCategoria = async (req, res, next) => {
   try {
-    res.status(200).json(await Categoria.findById(req.params.id));
+    const categoria = await Categoria.findById(req.params.id);
+    checkExists(categoria, "No se encontro la categoria", 404);
+    res.status(200).json(categoria);
   } catch (e) {
     next(e);
   }
@@ -24,7 +27,6 @@ const createCategoria = async (req, res, next) => {
     const nuevaCategoria = new Categoria(req.body);
     const categoriaGuardada = await nuevaCategoria.save();
     res.status(201).json(categoriaGuardada);
-
   } catch (e) {
     next(e);
   }
@@ -43,20 +45,12 @@ const updateCategoria = async (req, res, next) => {
 
     await Solicitud.updateMany(
       { "categoria._id": id },
-      {
-        $set: {
-          "categoria.nombre": categoriaActualizada.nombre,
-        },
-      }
+      { $set: { "categoria.nombre": categoriaActualizada.nombre } }
     );
 
     await Instructivo.updateMany(
       { "categoria._id": id },
-      {
-        $set: {
-          "categoria.nombre": categoriaActualizada.nombre,
-        },
-      }
+      { $set: { "categoria.nombre": categoriaActualizada.nombre } }
     );
 
     res.status(200).json({
