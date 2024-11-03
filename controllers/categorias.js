@@ -1,6 +1,7 @@
 const Categoria = require("../models/categorias");
 const Solicitud = require("../models/solicitudes");
 const Instructivo = require("../models/instructivos");
+const { checkExists } = require("../helpers/errorHandler");
 
 const getCategorias = async (req, res, next) => {
   try {
@@ -32,18 +33,13 @@ const createCategoria = async (req, res, next) => {
 const updateCategoria = async (req, res, next) => {
   try {
     const id = req.params.id;
-
     const categoriaActualizada = await Categoria.findByIdAndUpdate(
       id,
       req.body,
       { new: true, runValidators: true }
     );
 
-    if (!categoriaActualizada) {
-      const error = new Error("No se encontro la categoria");
-      error.statusCode = 404;
-      throw error;
-    }
+    checkExists(categoriaActualizada, "No se encontro la categoria", 404);
 
     await Solicitud.updateMany(
       { "categoria._id": id },
@@ -75,14 +71,8 @@ const updateCategoria = async (req, res, next) => {
 const deleteCategoria = async (req, res, next) => {
   try {
     const id = req.params.id;
-
     const categoriaEliminada = await Categoria.findByIdAndDelete(id);
-
-    if (!categoriaEliminada) {
-      const error = new Error("Categoria no encontrada");
-      error.status = 404;
-      throw error;
-    }
+    checkExists(categoriaEliminada, "Categoria no encontrada", 404);
 
     await Solicitud.updateMany(
       { "categoria._id": id },
