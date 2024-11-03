@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const errorHandler = require("./helpers/errorHandler.js");
+const { errorHandler } = require("./helpers/errorHandler.js");
 const {validarJwt, validarEmpleado, existeToken, esEmpleado} = require("./middlewares/validations.js")
 
 class Server {
