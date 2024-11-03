@@ -1,15 +1,14 @@
 const PedidosMateriales = require("../models/pedidosMateriales");
 const Empleado = require("../models/empleados");
 const Material = require("../models/materiales");
+const { checkExists } = require("../helpers/errorHandler");
 
 const getPedidos = async (req, res, next) => {
   try {
-    res.status(200).json(await PedidosMateriales.find());
+    const pedidos = await PedidosMateriales.find();
+    checkExists(pedidos, "No se encontraron pedidos de materiales", 404);
+    res.status(200).json(pedidos);
   } catch (e) {
-    const error = new Error(
-      "Hubo un error al obtener los pedidos de materiales"
-    );
-    error.statusCode = 404;
     next(e);
   }
 };
@@ -17,13 +16,8 @@ const getPedidos = async (req, res, next) => {
 const createPedido = async (req, res, next) => {
   try {
     const empleadoId = await Empleado.findById(req.body.empleado._id);
-
     const empleado = await Empleado.findById(empleadoId);
-    if (!empleado) {
-      const error = new Error("No se encontro el empleado");
-      error.statusCode = 404;
-      throw error;
-    }
+    checkExists(empleado, "No se encontro el empleado", 404);
 
     const materialesValidos = await Promise.all(
       req.body.materiales.map(async (material) => {
@@ -35,15 +29,17 @@ const createPedido = async (req, res, next) => {
     const materialesNoEncontrados = materialesValidos.filter(
       (material) => material === null
     );
-    if (materialesNoEncontrados.length > 0) {
-      return res.status(404).json({
-        mensaje: "Algunos materiales no fueron encontrados",
-        materialesNoEncontrados,
-      });
-    }
+
+    checkExists(materialesNoEncontrados.length === 0, "Algunos materiales no fueron encontrados", 404);
+
+    // if (materialesNoEncontrados.length > 0) {
+    //   return res.status(404).json({
+    //     mensaje: "Algunos materiales no fueron encontrados",
+    //     materialesNoEncontrados,
+    //   });
+    // }
 
     const nuevoPedidoMaterial = new PedidosMateriales(req.body);
-
     const pedidoMaterialGuardado = await nuevoPedidoMaterial.save();
 
     empleado.pedidosMateriales.push({
@@ -65,12 +61,7 @@ const getPedido = async (req, res, next) => {
   try {
     const id = req.params.id;
     const pedidoMaterial = await PedidosMateriales.findById(id);
-
-    if (!pedidoMaterial) {
-      const error = new Error("No se encontro el pedido de materiales");
-      error.statusCode = 404;
-      throw error;
-    }
+    checkExists(pedidoMaterial, "No se encontro el pedido de materiales", 404);
 
     res.status(200).json(pedidoMaterial);
   } catch (e) {
@@ -81,19 +72,13 @@ const getPedido = async (req, res, next) => {
 const updatePedido = async (req, res, next) => {
   try {
     const id = req.params.id;
-
-    //cambio de material
     const pedidoMaterialActualizado = await PedidosMateriales.findByIdAndUpdate(
       id,
       req.body,
       { new: true, runValidators: true }
     );
 
-    if (!pedidoMaterialActualizado) {
-      const error = new Error("No se encontro el pedido de materiales");
-      error.statusCode = 404;
-      throw error;
-    }
+    checkExists(pedidoMaterialActualizado, "No se encontro el pedido de materiales", 404);
 
     await Empleado.updateOne(
       { "pedidosMateriales._id": id },
@@ -118,27 +103,18 @@ const updatePedido = async (req, res, next) => {
 const deletePedido = async (req, res, next) => {
   try {
     const id = req.params.id;
-
     const pedidoMaterialEliminado = await PedidosMateriales.findByIdAndDelete(
       id
     );
 
-    if (!pedidoMaterialEliminado) {
-      const error = new Error("No se encontro el pedido de materiales");
-      error.statusCode = 404;
-      throw error;
-    }
+    checkExists(pedidoMaterialEliminado, "No se encontro el pedido de materiales", 404);
 
     const empleadoPedidoEliminado = await Empleado.updateOne(
       { "pedidosMateriales._id": id },
       { $pull: { pedidosMateriales: { _id: id } } }
     );
 
-    if (!empleadoPedidoEliminado) {
-      const error = new Error("Pedido eliminado, Empleado no actualizado");
-      error.statusCode = 404;
-      throw error;
-    }
+    checkExists(empleadoPedidoEliminado, "Pedido eliminado, Empleado no actualizado", 404);
 
     res
       .status(200)
