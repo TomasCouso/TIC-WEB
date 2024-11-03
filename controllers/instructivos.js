@@ -6,7 +6,7 @@ const getInstructivos = async (req, res, next) => {
   let instructivos;
 
   try {
-    if (req.usuario.rol === "admin" || req.usuario.rol === "becario") {
+    if (req.usuario && (req.usuario.rol === "admin" || req.usuario.rol === "becario")) {
       instructivos = await Instructivo.find();
     } else {
       instructivos = await Instructivo.find({ soloEmpleados: false });
