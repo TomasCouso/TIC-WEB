@@ -19,14 +19,13 @@ const validarJwt = async (req, res, next) => {
       return next(error);
     }
     req.user = user.datosUsuario;
-    console.log("validarJwt", req.user);
+    // console.log("validarJwt", req.user);
     next();
   });
 };
 
-//VERIFICA SI ESTA AUTENTICADO COMO ADMIN
 const validarAdmin = (req, res, next) => {
-  console.log("validar admin", req.usuario);
+  // console.log("validar admin", req.usuario);
 
   if (req.usuario.rol !== "admin") {
     const error = new Error("Autenticación no válida ADMIN");
@@ -37,7 +36,7 @@ const validarAdmin = (req, res, next) => {
 };
 
 const validarEmpleado = (req, res, next) => {
-  console.log("validar empleado", req.usuario);
+  // console.log("validar empleado", req.usuario);
 
   if (
     !req.usuario ||
@@ -72,7 +71,7 @@ const esEmpleado = async (req, res, next) => {
               rol: empleado.rol,
               email: empleado.email,
             };
-            console.log("es empleado", req.usuario);
+            // console.log("es empleado", req.usuario);
           }
         } catch (e) {
           return next();
@@ -94,7 +93,7 @@ const existeToken = (req, res, next) => {
       if (!err) {
         req.usuario = user.datosUsuario;
       }
-      console.log("existeToken", req.usuario);
+      // console.log("existeToken", req.usuario);
       next(err);
     });
   } else {

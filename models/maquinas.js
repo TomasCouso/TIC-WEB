@@ -3,12 +3,10 @@ const mongoose = require("mongoose");
 const maquinaSchema = new mongoose.Schema(
   {
     oficina: {
-      //LAB_B
       type: String,
       required: true,
     },
     nombre: {
-      //PC01 o LAB01
       type: String,
       required: true,
     },
@@ -17,7 +15,6 @@ const maquinaSchema = new mongoose.Schema(
       required: true,
     },
     memoriaRAM: {
-      //8GB TAMBIEN PODRIAMOS AÑADIR tipoRAM (DDR3, etc.)
       type: Number,
       required: true,
     },

@@ -11,7 +11,7 @@ const instructivoSchema = new mongoose.Schema(
       required: true,
     },
     contenido: {
-      type: String, //URL DEL ACHIVO
+      type: String,
       required: true,
     },
     autor: {
@@ -27,7 +27,6 @@ const instructivoSchema = new mongoose.Schema(
       nombre: String,
     },
     soloEmpleados: {
-      //AGREGO BOOLEAN PARA UTILIZARLO EN LAS SOLICITUDES DE INSTRUCTIVOS TANTO DESDE CLIENTE COMO DE EMPLEADOS
       type: Boolean,
       required: false,
       default: false,
