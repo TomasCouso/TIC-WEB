@@ -22,6 +22,7 @@ class Server {
     this.app.use(express.json());
     
     // Middleware para habilitar CORS de mi IP (EZE)
+    const cors = require("cors");
     this.app.use(cors({ origin: "http://localhost:5173" }));
   }
 
