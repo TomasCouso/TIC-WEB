@@ -21,7 +21,7 @@ class Server {
 
   cargarMiddlewares() {
     const corsOptions = {
-      origin: 'http://localhost:5173', // Permitir solo este origen
+      origin: '*', // Permitir cualquier origen (reemplazar luego)
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
       allowedHeaders: ['Content-Type', 'Authorization'], // Headers permitidos
     };
