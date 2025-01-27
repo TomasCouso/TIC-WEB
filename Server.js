@@ -1,7 +1,8 @@
+const cors = require('cors');
 const express = require("express");
 const mongoose = require("mongoose");
 const { errorHandler } = require("./helpers/errorHandler.js");
-const {validarJwt, validarEmpleado, existeToken, esEmpleado} = require("./middlewares/validations.js")
+const { validarJwt, validarEmpleado, existeToken, esEmpleado } = require("./middlewares/validations.js")
 
 class Server {
   constructor() {
@@ -19,6 +20,13 @@ class Server {
   }
 
   cargarMiddlewares() {
+    const corsOptions = {
+      origin: 'http://localhost:5173', // Permitir solo este origen
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
+      allowedHeaders: ['Content-Type', 'Authorization'], // Headers permitidos
+    };
+
+    this.app.use(cors(corsOptions));
     this.app.use(express.json());
   }
 
