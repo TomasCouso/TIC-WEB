@@ -1,6 +1,5 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors"); // Importar CORS
 const { errorHandler } = require("./helpers/errorHandler.js");
 const {validarJwt, validarEmpleado, existeToken, esEmpleado} = require("./middlewares/validations.js")
 
@@ -21,9 +20,6 @@ class Server {
 
   cargarMiddlewares() {
     this.app.use(express.json());
-
-    // Configurar CORS antes de las rutas
-    this.app.use(cors({ origin: "http://localhost:5173" }));
   }
 
   cargarRutas() {
