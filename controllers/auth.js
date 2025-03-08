@@ -27,7 +27,7 @@ const loginCallback = async (req, res, next) => {
 
     const accessToken = response.data.access_token;
 
-    // obtener información del usuario
+    // Usas el token para obtener la info del usuario desde Microsoft Graph
     const userResponse = await axios.get(
       "https://graph.microsoft.com/v1.0/me",
       { headers: { Authorization: `Bearer ${accessToken}` } }
@@ -37,28 +37,41 @@ const loginCallback = async (req, res, next) => {
     const datosUsuario = {
       email: user.mail,
       nombre: user.displayName,
+      foto: user.photo,
+      id: user.id,
     };
 
     // verificar que el email sea de la universidad
-    checkExists(datosUsuario.email.endsWith("@alu.inspt.utn.edu.ar") || datosUsuario.email.endsWith("@inspt.utn.edu.ar"),
+    checkExists(
+      datosUsuario.email.endsWith("@alu.inspt.utn.edu.ar") ||
+        datosUsuario.email.endsWith("@inspt.utn.edu.ar"),
       "Acceso denegado",
       403
     );
 
-    // crear el token de acceso con el usuario
+    // Aquí creas tu propio token usando solo datos del usuario
     const appToken = jwt.sign({ datosUsuario }, process.env.JWT_SECRET, {
       expiresIn: "5h",
     });
 
-    res.set("Authorization", `Bearer ${appToken}`);
-
-    res.status(200).json({
-      mensaje: "Inicio de sesión exitoso",
-      token: appToken,
+    res.cookie("token", appToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Solo en producción (HTTPS)
+      maxAge: 5 * 60 * 60 * 1000, // 5 horas en milisegundos
+      sameSite: "lax",
     });
+
+    res.redirect("http://localhost:5173/");
   } catch (error) {
     next(error);
   }
+};
+
+const getUserData = (req, res) => {
+  if (req.usuario) {
+    return res.json({ user: req.usuario });
+  }
+  res.status(204).end();
 };
 
 function getUrlLogin() {
@@ -72,4 +85,5 @@ function getUrlLogin() {
 module.exports = {
   loginMicrosoft,
   loginCallback,
+  getUserData,
 };
