@@ -74,6 +74,16 @@ const getUserData = (req, res) => {
   res.status(204).end();
 };
 
+const logout = (req, res) => {
+  res.clearCookie("token", {
+    path: "/", 
+    httpOnly: true, 
+    secure: process.env.NODE_ENV === "production", 
+  });
+
+  res.status(200).json({ message: "Sesión cerrada correctamente" });
+};
+
 function getUrlLogin() {
   const client_tenant = process.env.TENANT_ID;
   const client_id = process.env.CLIENT_ID;
@@ -86,4 +96,5 @@ module.exports = {
   loginMicrosoft,
   loginCallback,
   getUserData,
+  logout,
 };
