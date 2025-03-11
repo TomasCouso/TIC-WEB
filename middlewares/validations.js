@@ -66,10 +66,8 @@ const esEmpleado = async (req, res, next) => {
           const empleado = await Empleado.findOne({ email });
           if (empleado) {
             req.usuario = {
-              id: empleado._id,
-              nombre: empleado.nombre,
+              ...req.usuario,
               rol: empleado.rol,
-              email: empleado.email,
             };
             // console.log("es empleado", req.usuario);
           }
@@ -77,7 +75,6 @@ const esEmpleado = async (req, res, next) => {
           return next();
         }
       }
-
       next();
     });
   } else {

@@ -37,7 +37,6 @@ const loginCallback = async (req, res, next) => {
     const datosUsuario = {
       email: user.mail,
       nombre: user.displayName,
-      foto: user.photo,
       id: user.id,
     };
 
@@ -76,9 +75,9 @@ const getUserData = (req, res) => {
 
 const logout = (req, res) => {
   res.clearCookie("token", {
-    path: "/", 
-    httpOnly: true, 
-    secure: process.env.NODE_ENV === "production", 
+    path: "/",
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
   });
 
   res.status(200).json({ message: "Sesión cerrada correctamente" });
