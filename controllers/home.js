@@ -4,8 +4,10 @@ const Empleado = require("../models/empleados");
 
 const getIndex = async (req, res, next) => {
   try {
-    const noticias = await Noticia.find().limit(3);
-    const instructivos = await Instructivo.find().limit(3);
+    const noticias = await Noticia.find().sort({ createdAt: -1 }).limit(3);
+    const instructivos = await Instructivo.find({ soloEmpleados: false })
+      .sort({ createdAt: -1 })
+      .limit(3);
 
     const empleadosNombres = (await Empleado.find()).map((e) => e.nombre);
 
