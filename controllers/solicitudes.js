@@ -95,7 +95,7 @@ const deleteSolicitud = async (req, res, next) => {
     const solicitudEliminada = await Solicitud.findByIdAndDelete(id);
 
     checkExists(solicitudEliminada, "No se encontro la solicitud", 404);
-    
+
     await Empleado.updateOne(
       { "solicitudes._id": id },
       { $pull: { solicitudes: { _id: id } } }

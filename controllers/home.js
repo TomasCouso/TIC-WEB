@@ -33,4 +33,27 @@ const getIndex = async (req, res, next) => {
   }
 };
 
-module.exports = { getIndex };
+const getEmpleados = async (req, res, next) => {
+  try {
+    const empleados = (await Empleado.find()).map((e) => {
+      return {
+        _id: e._id,
+        nombre: e.nombre,
+      };
+    });
+    res.status(200).json(empleados);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const getEmpleado = async (req, res, next) => {
+  try {
+    const empleadoNombre = (await Empleado.findById(req.params.id)).nombre;
+    res.status(200).json(empleadoNombre);
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = { getIndex, getEmpleados, getEmpleado };

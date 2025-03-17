@@ -25,7 +25,10 @@ const solicitudSchema = new mongoose.Schema(
         ref: "Categoria",
         required: true,
       },
-      nombre: String,
+      nombre: {
+        type: String,
+        required: true,
+      },
     },
     empleado: {
       _id: {

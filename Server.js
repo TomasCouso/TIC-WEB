@@ -37,16 +37,8 @@ class Server {
   }
 
   cargarRutas() {
-    this.app.use(
-      "/api/empleados",
-      [validarJwt, esEmpleado, validarEmpleado],
-      require("./routes/empleados")
-    );
-    this.app.use(
-      "/api/home",
-      [existeToken, esEmpleado],
-      require("./routes/home")
-    );
+    this.app.use("/api/empleados",[validarJwt, esEmpleado, validarEmpleado],require("./routes/empleados"));
+    this.app.use("/api/home",[existeToken, esEmpleado],require("./routes/home"));
     this.app.use("/api/auth", require("./routes/auth"));
     this.app.use(errorHandler);
   }
