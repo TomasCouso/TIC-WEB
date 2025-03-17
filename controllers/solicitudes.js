@@ -34,10 +34,14 @@ const getSolicitud = async (req, res, next) => {
 const createSolicitud = async (req, res, next) => {
   try {
     const empleado = await Empleado.findById(req.body.empleado._id);
-    checkExists(empleado, "No se encontro el empleado", 404);
+    if (!empleado) {
+      return res.status(404).json({ mensaje: "No se encontró el empleado" });
+    }
 
     const categoria = await Categoria.findById(req.body.categoria._id);
-    checkExists(categoria, "No se encontro la categoria", 404);
+    if (!categoria) {
+      return res.status(404).json({ mensaje: "No se encontró la categoría" });
+    }
 
     const nuevaSolicitud = new Solicitud(req.body);
     const solicitudGuardada = await nuevaSolicitud.save();
@@ -66,7 +70,9 @@ const updateSolicitud = async (req, res, next) => {
       { new: true, runValidators: true }
     );
 
-    checkExists(solicitudActualizada, "No se encontro la solicitud", 404);
+    if (!solicitudActualizada) {
+      return res.status(404).json({ mensaje: "No se encontró la solicitud" });
+    }
 
     await Empleado.updateOne(
       { "solicitudes._id": id },
@@ -81,7 +87,7 @@ const updateSolicitud = async (req, res, next) => {
     );
 
     res.status(200).json({
-      mensaje: "Solicitud actualizado exitosamente, Empleado actualizado",
+      mensaje: "Solicitud actualizada exitosamente, Empleado actualizado",
       solicitudActualizada,
     });
   } catch (e) {
