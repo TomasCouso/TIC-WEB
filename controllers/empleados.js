@@ -83,14 +83,14 @@ const getInfoEmpleado = async (req, res, next) => {
   try {
     const empleado = await Empleado.findById(req.usuario.id);
 
-    const pedidosPendientes = empleado.pedidosMateriales.filter(
-      (pedido) => pedido.estado === "pendiente"
-    );
+    const pedidosPendientes = empleado.pedidosMateriales
+      .sort((a, b) => new Date(b.fechaSolicitud) - new Date(a.fechaSolicitud))
+      .slice(0, 3);
 
-    const solicitudesPendientes = empleado.solicitudes.filter(
-      (solicitud) => solicitud.estado === "pendiente"
-    );
-    
+    const solicitudesPendientes = empleado.solicitudes
+      .sort((a, b) => new Date(b.fechaSolicitud) - new Date(a.fechaSolicitud))
+      .slice(0, 3);
+
     res.status(200).json({
       empleado,
       pedidosPendientes,

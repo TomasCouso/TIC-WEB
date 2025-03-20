@@ -67,6 +67,7 @@ const esEmpleado = async (req, res, next) => {
           if (empleado) {
             req.usuario = {
               ...req.usuario,
+              id: empleado._id,
               rol: empleado.rol,
             };
             // console.log("es empleado", req.usuario);
