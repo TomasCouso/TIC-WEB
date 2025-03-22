@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
 
 const empleadoSchema = new mongoose.Schema(
   {
@@ -19,12 +18,6 @@ const empleadoSchema = new mongoose.Schema(
     telefono: {
       type: String,
       required: true,
-    },
-    password: {
-      type: String,
-      required: true,
-      minlength: 8,
-      trim: true,
     },
     rol: {
       type: String,
@@ -65,37 +58,6 @@ const empleadoSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-empleadoSchema.pre("save", async function (next) {
-  try {
-    if (this.isModified("password")) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(this.password, salt);
-      this.password = hashedPassword;
-    }
-    next();
-  } catch (error) {
-    return next(error);
-  }
-});
-
-empleadoSchema.pre("findOneAndUpdate", async function (next) {
-  try {
-    const update = this.getUpdate();
-    if (update.password) {
-      const salt = await bcrypt.genSalt(10);
-      update.password = await bcrypt.hash(update.password, salt);
-      this.setUpdate(update);
-    }
-    next();
-  } catch (error) {
-    return next(error);
-  }
-});
-
-empleadoSchema.methods.comparePassword = async function (candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
 
 const Empleado = mongoose.model("Empleado", empleadoSchema);
 
