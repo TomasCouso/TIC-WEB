@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { validarAdmin } = require("../middlewares/validations");
+const { validarAdmin, validarEmpleado } = require("../middlewares/validations");
 
 const {
   getEmpleados,
@@ -18,7 +18,7 @@ router.use("/materiales", require("./materiales"));
 router.use("/pedidos", require("./pedidosMateriales"));
 router.use("/categorias", require("./categorias"));
 
-router.get("/", [validarAdmin], getEmpleados);
+router.get("/", [validarEmpleado], getEmpleados);
 
 router.get("/:id", [validarAdmin], getEmpleado);
 
