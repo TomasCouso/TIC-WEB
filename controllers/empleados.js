@@ -12,7 +12,27 @@ const getEmpleados = async (req, res, next) => {
   }
 };
 
+const existeAdmin = async (req, res) => {
+  try {
+    const administradores = await Empleado.find({ rol: "admin" });
+    res.json({ hayAdmin: administradores.length > 0 });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
 const createEmpleado = async (req, res, next) => {
+  try {
+    const nuevoEmpleado = new Empleado(req.body);
+    const empleadoGuardado = await nuevoEmpleado.save();
+    res.status(201).json(empleadoGuardado);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const createEmpleadoAdmin = async (req, res, next) => {
   try {
     const nuevoEmpleado = new Empleado(req.body);
     const empleadoGuardado = await nuevoEmpleado.save();
@@ -103,7 +123,9 @@ const getInfoEmpleado = async (req, res, next) => {
 
 module.exports = {
   getEmpleados,
+  existeAdmin,
   createEmpleado,
+  createEmpleadoAdmin,
   getEmpleado,
   updateEmpleado,
   deleteEmpleado,

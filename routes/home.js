@@ -2,7 +2,10 @@ const express = require("express");
 
 const router = express.Router();
 
-const { createEmpleado } = require("../controllers/empleados");
+const {
+  createEmpleadoAdmin,
+  existeAdmin,
+} = require("../controllers/empleados");
 
 const { getIndex, getEmpleados, getEmpleado } = require("../controllers/home");
 
@@ -23,6 +26,8 @@ router.get("/empleados", getEmpleados);
 
 router.get("/empleados/:id", getEmpleado);
 
-router.post("/admin", validarPrimerAdmin, createEmpleado);
+router.get("/admin", existeAdmin);
+
+router.post("/admin", validarPrimerAdmin, createEmpleadoAdmin);
 
 module.exports = router;
