@@ -18,8 +18,8 @@ const getIndex = async (req, res, next) => {
       email: "email de TIC",
       interno: "telefono interno de TIC",
       direccion: "Piso 3 TIC",
-      mision: "mision de TIC",
-      vision: "vision de TIC",
+      mision: "Brindar soluciones tecnológicas eficientes y sostenibles que optimicen los procesos institucionales, fomenten la innovación y garanticen el acceso equitativo a los recursos digitales. Trabajamos comprometidos con la mejora continua, acompañando a cada área en su transformación digital con soporte, desarrollo e infraestructura de calidad.",
+      vision: "Ser un referente en la gestión e implementación de tecnologías dentro del ámbito institucional, promoviendo una cultura digital inclusiva, segura y en constante evolución. Aspiramos a consolidarnos como un equipo estratégico, impulsando el cambio y anticipándonos a los desafíos del futuro.",
       empleados: empleadosNombres,
     };
 
